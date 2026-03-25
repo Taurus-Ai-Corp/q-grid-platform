@@ -1,0 +1,32 @@
+{
+  "name": "comply",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^16.2.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@taurus/ui": "workspace:*",
+    "@taurus/pqc-engine": "workspace:*",
+    "@taurus/pqc-crypto": "workspace:*",
+    "@taurus/jurisdiction": "workspace:*",
+    "@taurus/db": "workspace:*",
+    "@taurus/hedera": "workspace:*"
+  },
+  "devDependencies": {
+    "@taurus/tsconfig": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5.8.0",
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/postcss": "^4.0.0"
+  }
+}
