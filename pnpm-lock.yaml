@@ -78,6 +78,18 @@ importers:
         specifier: ^3.0.0
         version: 3.2.4(@types/node@25.5.0)(terser@5.46.1)(yaml@2.8.3)
 
+  packages/pqc-engine:
+    devDependencies:
+      '@taurus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^5.8.0
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.4(@types/node@25.5.0)(terser@5.46.1)(yaml@2.8.3)
+
   packages/tsconfig: {}
 
 packages:
