@@ -43,8 +43,10 @@ function gradeToVulnerable(grade: CryptoGrade): boolean {
 }
 
 function parseCertificate(cert: tls.PeerCertificate): { certInfo: CertificateInfo; algorithm: Algorithm } {
-  const subject = cert.subject?.CN ?? cert.subject?.O ?? 'Unknown'
-  const issuer = cert.issuer?.CN ?? cert.issuer?.O ?? 'Unknown'
+  const rawSubject = cert.subject?.CN ?? cert.subject?.O ?? 'Unknown'
+  const subject = Array.isArray(rawSubject) ? rawSubject[0] ?? 'Unknown' : rawSubject
+  const rawIssuer = cert.issuer?.CN ?? cert.issuer?.O ?? 'Unknown'
+  const issuer = Array.isArray(rawIssuer) ? rawIssuer[0] ?? 'Unknown' : rawIssuer
   const validFrom = cert.valid_from ?? ''
   const validTo = cert.valid_to ?? ''
 

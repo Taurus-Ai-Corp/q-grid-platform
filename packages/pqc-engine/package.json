@@ -6,7 +6,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" }
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "@taurus/tsconfig": "workspace:*",
+    "@types/node": "^25.5.0",
     "typescript": "^5.8.0",
     "vitest": "^3.0.0"
   }

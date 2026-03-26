@@ -6,7 +6,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" }
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -16,11 +19,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@noble/post-quantum": "^0.2.1",
-    "@noble/hashes": "^1.7.0"
+    "@noble/hashes": "^1.7.0",
+    "@noble/post-quantum": "^0.2.1"
   },
   "devDependencies": {
     "@taurus/tsconfig": "workspace:*",
+    "@types/node": "^25.5.0",
     "typescript": "^5.8.0",
     "vitest": "^3.0.0"
   }
