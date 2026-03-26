@@ -4,8 +4,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Comply.Q-Grid',
-    default: 'Comply.Q-Grid — EU AI Act Compliance Platform',
+    template: '%s | Q-Grid Comply',
+    default: 'Q-Grid Comply — Quantum Grid Compliance for EU AI Act',
   },
   description:
     'EU AI Act compliance automation with blockchain audit trails and post-quantum cryptography. Sovereign AI report generation.',
