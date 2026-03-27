@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { systemsStore, type SystemRecord } from '@/lib/systems-store'
 import { classifyRisk } from '@/lib/risk-classifier'
+import { logAuditEvent } from '@/lib/audit-logger'
 
 export async function GET() {
   const { userId } = await auth()
@@ -45,6 +46,15 @@ export async function POST(req: Request) {
   const existing = systemsStore.get(userId) ?? []
   existing.push(system)
   systemsStore.set(userId, existing)
+
+  // Audit log (fire-and-forget PQC + HCS)
+  void logAuditEvent({
+    userId,
+    entityType: 'system',
+    entityId: system.id,
+    action: 'created',
+    details: `Registered AI system: ${system.name} (${system.riskLevel} risk, ${system.industry})`,
+  })
 
   return NextResponse.json(system, { status: 201 })
 }

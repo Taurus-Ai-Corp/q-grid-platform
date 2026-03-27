@@ -7,6 +7,7 @@ import { reportsStore } from '@/lib/report-store'
 import { scoreAssessment } from '@/lib/assessment-scorer'
 import { generateReport } from '@/lib/report-generator'
 import { createStamp } from '@taurus/pqc-crypto'
+import { logAuditEvent } from '@/lib/audit-logger'
 
 // GET /api/reports — list all reports for the current user
 export async function GET() {
@@ -150,6 +151,15 @@ export async function POST(req: Request) {
   // Persist
   const existing = reportsStore.get(userId) ?? []
   reportsStore.set(userId, [report, ...existing])
+
+  // Audit log (fire-and-forget PQC + HCS)
+  void logAuditEvent({
+    userId,
+    entityType: 'report',
+    entityId: reportId,
+    action: 'generated',
+    details: `Report generated for assessment ${assessmentId} (mode: ${report.mode}${report.model ? `, model: ${report.model}` : ''})`,
+  })
 
   return NextResponse.json(report, { status: 201 })
 }
