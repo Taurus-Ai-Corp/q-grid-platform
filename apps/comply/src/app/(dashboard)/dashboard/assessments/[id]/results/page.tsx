@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useEffect, useState, useCallback } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Shield, FileText, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, Shield, FileText, AlertTriangle, Loader2 } from 'lucide-react'
 import { euAssessmentSections } from '@/lib/assessment-sections'
 import type { AssessmentRecord, Recommendation } from '@/lib/assessment-store'
 
@@ -136,10 +136,13 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
 
 export default function AssessmentResultsPage() {
   const params = useParams<{ id: string }>()
+  const router = useRouter()
   const id = params.id
   const [assessment, setAssessment] = useState<AssessmentWithSystem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [generating, setGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
 
   useEffect(() => {
     fetch(`/api/assessments/${id}`)
@@ -151,6 +154,28 @@ export default function AssessmentResultsPage() {
       .catch((err: unknown) => setError(err instanceof Error ? err.message : 'Failed to load'))
       .finally(() => setLoading(false))
   }, [id])
+
+  const handleGenerateReport = useCallback(async () => {
+    if (!id) return
+    setGenerating(true)
+    setGenerateError(null)
+    try {
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assessmentId: id, mode: 'template' }),
+      })
+      if (!res.ok) {
+        const data = await res.json() as { error?: string }
+        throw new Error(data.error ?? 'Failed to generate report')
+      }
+      const report = await res.json() as { id: string }
+      router.push(`/dashboard/reports/${report.id}`)
+    } catch (err: unknown) {
+      setGenerateError(err instanceof Error ? err.message : 'Unexpected error')
+      setGenerating(false)
+    }
+  }, [id, router])
 
   if (loading) {
     return (
@@ -272,6 +297,11 @@ export default function AssessmentResultsPage() {
 
       {/* CTA */}
       <div className="bg-white rounded-[var(--radius)] border border-[var(--graphite-ghost)] shadow-sm p-6">
+        {generateError && (
+          <div className="mb-4 bg-red-50 border border-red-200 rounded-[var(--radius)] p-3 text-xs text-red-700">
+            {generateError}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[var(--accent-light)] flex items-center justify-center">
@@ -280,17 +310,26 @@ export default function AssessmentResultsPage() {
             <div>
               <p className="text-sm font-medium text-[var(--graphite)]">Generate Compliance Report</p>
               <p className="text-xs text-[var(--graphite-light)]">
-                PDF report with findings, recommendations, and Declaration of Conformity
+                EU AI Act Conformity Assessment — PQC signed, PDF export ready
               </p>
             </div>
           </div>
           <button
-            disabled
-            className="inline-flex items-center gap-2 h-10 px-5 text-sm font-semibold text-white bg-[var(--accent)] rounded-[var(--radius)] opacity-40 cursor-not-allowed"
-            title="Coming in Part 3E"
+            onClick={() => { void handleGenerateReport() }}
+            disabled={generating}
+            className="inline-flex items-center gap-2 h-10 px-5 text-sm font-semibold text-white bg-[var(--accent)] rounded-[var(--radius)] hover:bg-[var(--accent-dark)] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
-            Generate Report
-            <span className="text-xs font-normal opacity-80">(Coming in Part 3E)</span>
+            {generating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Generating Report&hellip;
+              </>
+            ) : (
+              <>
+                <FileText className="h-4 w-4" />
+                Generate Report
+              </>
+            )}
           </button>
         </div>
       </div>
