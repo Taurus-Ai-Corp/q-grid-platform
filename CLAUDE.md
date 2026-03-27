@@ -29,6 +29,15 @@ pnpm test                     # Run all tests
 - PQC-everywhere: every artifact ML-DSA-65 signed + Hedera HCS anchored
 - Fonts: DM Sans (body) + Jura (heading) + IBM Plex Mono (code) via CSS @import
 
+## Comply App Routes (Phase 3 — in progress)
+
+Public: `/` (EU landing), `/pricing` (EUR), `/sign-in`, `/sign-up`
+Dashboard: `/dashboard` (live stats), `/dashboard/systems` (list), `/dashboard/systems/new` (register)
+API: `GET|POST /api/systems`, `GET|DELETE /api/systems/[id]`
+Auth: Clerk via proxy.ts, all /dashboard/* routes protected
+Data: In-memory store for MVP — swap to Neon DB when provisioned
+Risk classifier: `src/lib/risk-classifier.ts` (EU AI Act Annex III rule-based)
+
 ## Gotchas
 
 - `proxy.ts` not `middleware.ts` — Next.js 16 deprecated middleware.ts
