@@ -1,28 +1,62 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Server, ClipboardCheck, FileText, ChevronRight } from 'lucide-react'
 
-const STAT_CARDS = [
-  {
-    label: 'AI Systems',
-    value: 0,
-    icon: Server,
-    description: 'Registered AI systems',
-  },
-  {
-    label: 'Assessments',
-    value: 0,
-    icon: ClipboardCheck,
-    description: 'Conformity assessments',
-  },
-  {
-    label: 'Reports',
-    value: 0,
-    icon: FileText,
-    description: 'Generated reports',
-  },
-]
+interface DashboardStats {
+  systemCount: number
+  assessmentCount: number
+  reportCount: number
+}
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats>({
+    systemCount: 0,
+    assessmentCount: 0,
+    reportCount: 0,
+  })
+
+  useEffect(() => {
+    fetch('/api/systems')
+      .then((res) => {
+        if (!res.ok) return
+        return res.json() as Promise<{ systems: unknown[] }>
+      })
+      .then((data) => {
+        if (data) {
+          setStats((prev) => ({ ...prev, systemCount: data.systems.length }))
+        }
+      })
+      .catch(() => {
+        // silently fail — stats stay at 0
+      })
+  }, [])
+
+  const STAT_CARDS = [
+    {
+      label: 'AI Systems',
+      value: stats.systemCount,
+      icon: Server,
+      description: 'Registered AI systems',
+      href: '/dashboard/systems',
+    },
+    {
+      label: 'Assessments',
+      value: stats.assessmentCount,
+      icon: ClipboardCheck,
+      description: 'Conformity assessments',
+      href: '/dashboard/assessments',
+    },
+    {
+      label: 'Reports',
+      value: stats.reportCount,
+      icon: FileText,
+      description: 'Generated reports',
+      href: '/dashboard/reports',
+    },
+  ]
+
   return (
     <div>
       <div className="mb-8">
@@ -39,9 +73,10 @@ export default function DashboardPage() {
         {STAT_CARDS.map((card) => {
           const Icon = card.icon
           return (
-            <div
+            <Link
               key={card.label}
-              className="bg-white rounded-[var(--radius)] p-5 border border-[var(--graphite-ghost)] shadow-sm"
+              href={card.href}
+              className="bg-white rounded-[var(--radius)] p-5 border border-[var(--graphite-ghost)] shadow-sm hover:shadow-md transition-shadow block"
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-[var(--graphite-light)] uppercase tracking-wide">
@@ -55,7 +90,7 @@ export default function DashboardPage() {
                 {card.value}
               </p>
               <p className="text-xs text-[var(--graphite-light)] mt-1">{card.description}</p>
-            </div>
+            </Link>
           )
         })}
       </div>
