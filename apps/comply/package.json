@@ -14,16 +14,17 @@
   "dependencies": {
     "@clerk/nextjs": "^7.0.7",
     "@taurus/db": "workspace:*",
-    "drizzle-orm": "^0.39.0",
     "@taurus/hedera": "workspace:*",
     "@taurus/jurisdiction": "workspace:*",
     "@taurus/pqc-crypto": "workspace:*",
     "@taurus/pqc-engine": "workspace:*",
     "@taurus/ui": "workspace:*",
+    "drizzle-orm": "^0.39.0",
     "lucide-react": "^0.469.0",
     "next": "^16.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "stripe": "^21.0.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {

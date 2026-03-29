@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Check, ChevronRight } from 'lucide-react'
 import type { Metadata } from 'next'
+import { PricingCTA } from './pricing-cta'
 
 export const metadata: Metadata = {
   title: 'Pricing',
@@ -8,13 +9,13 @@ export const metadata: Metadata = {
 
 const PLANS = [
   {
+    key: 'starter' as const,
     name: 'Starter',
     price: '€399',
     period: '/month',
     description: 'For small teams getting started with EU AI Act compliance.',
     featured: false,
     cta: 'Start Free Trial',
-    href: '/sign-up',
     features: [
       'Up to 3 AI systems',
       'EU AI Act risk classification',
@@ -25,13 +26,13 @@ const PLANS = [
     ],
   },
   {
+    key: 'growth' as const,
     name: 'Growth',
     price: '€899',
     period: '/month',
     description: 'For growing teams managing multiple AI systems and regulations.',
     featured: true,
     cta: 'Start Free Trial',
-    href: '/sign-up',
     features: [
       'Up to 20 AI systems',
       'Full EU AI Act + GDPR + DORA coverage',
@@ -44,6 +45,7 @@ const PLANS = [
     ],
   },
   {
+    key: 'enterprise' as const,
     name: 'Enterprise',
     price: 'Custom',
     period: '',
@@ -144,9 +146,7 @@ export default function PricingPage() {
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2.5">
                     <Check
-                      className={`h-4 w-4 mt-0.5 shrink-0 ${
-                        plan.featured ? 'text-[var(--accent)]' : 'text-[var(--accent)]'
-                      }`}
+                      className="h-4 w-4 mt-0.5 shrink-0 text-[var(--accent)]"
                     />
                     <span
                       className={`text-sm ${
@@ -159,18 +159,18 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              {/* CTA */}
-              <Link
-                href={plan.href}
-                className={`inline-flex items-center justify-center gap-2 h-11 px-6 text-sm font-semibold rounded-[var(--radius)] transition-colors ${
-                  plan.featured
-                    ? 'bg-[var(--accent)] text-white hover:bg-[var(--accent-dark)]'
-                    : 'border border-[var(--graphite-ghost)] text-[var(--graphite)] hover:bg-[var(--graphite-whisper)]'
-                }`}
-              >
-                {plan.cta}
-                <ChevronRight className="h-4 w-4" />
-              </Link>
+              {/* CTA — interactive for starter/growth, static link for enterprise */}
+              {plan.key === 'enterprise' ? (
+                <Link
+                  href="/contact"
+                  className={`inline-flex items-center justify-center gap-2 h-11 px-6 text-sm font-semibold rounded-[var(--radius)] transition-colors border border-[var(--graphite-ghost)] text-[var(--graphite)] hover:bg-[var(--graphite-whisper)]`}
+                >
+                  {plan.cta}
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              ) : (
+                <PricingCTA plan={plan.key} featured={plan.featured} label={plan.cta} />
+              )}
             </div>
           ))}
         </div>
