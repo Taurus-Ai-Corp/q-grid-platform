@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { Analytics } from '../components/analytics'
 
 // Fonts loaded via CSS @import in globals.css (avoids Google Fonts fetch failures during parallel builds)
 // DM Sans (body), IBM Plex Mono (code), Jura (headings)
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <body className="bg-[var(--bone)] text-[var(--graphite)] font-[var(--font-sans)] antialiased">
         {children}
+        <Analytics />
       </body>
     </html>
   )
