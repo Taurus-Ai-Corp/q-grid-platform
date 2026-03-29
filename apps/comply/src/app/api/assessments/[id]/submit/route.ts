@@ -1,5 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { and, eq } from 'drizzle-orm'
+import { assessments as assessmentsTable } from '@taurus/db'
+import { getDb } from '@/lib/db'
 import { assessmentsStore } from '@/lib/assessment-store'
 import { scoreAssessment } from '@/lib/assessment-scorer'
 import { createStamp } from '@taurus/pqc-crypto'
@@ -14,28 +17,98 @@ export async function POST(
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { id } = await params
-    const assessments = assessmentsStore.get(userId) ?? []
-    const idx = assessments.findIndex((a) => a.id === id)
 
-    if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const db = getDb()
+    if (!db) {
+      // Fallback: in-memory store
+      const assessments = assessmentsStore.get(userId) ?? []
+      const idx = assessments.findIndex((a) => a.id === id)
+      if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    const current = assessments[idx]!
+      const current = assessments[idx]!
+      if (current.status === 'completed') {
+        return NextResponse.json({ error: 'Assessment already completed' }, { status: 400 })
+      }
 
-    if (current.status === 'completed') {
+      const result = scoreAssessment(current.responses)
+
+      let pqcHash: string | undefined
+      let pqcSignature: string | undefined
+      let pqcPublicKey: string | undefined
+      const platformPkHex = process.env['PLATFORM_PQC_PUBLIC_KEY']
+      const platformSkHex = process.env['PLATFORM_PQC_SECRET_KEY']
+      if (platformPkHex && platformSkHex) {
+        try {
+          const pk = Uint8Array.from(Buffer.from(platformPkHex, 'hex'))
+          const sk = Uint8Array.from(Buffer.from(platformSkHex, 'hex'))
+          const stamp = createStamp(
+            {
+              type: 'assessment',
+              id,
+              payload: { score: result.score, riskLevel: result.riskLevel, categoryScores: result.categoryScores },
+              jurisdiction: (process.env['JURISDICTION'] ?? 'eu') as 'eu' | 'na' | 'in' | 'ae',
+            },
+            sk,
+            pk,
+          )
+          pqcHash = stamp.hash
+          pqcSignature = stamp.signature
+          pqcPublicKey = stamp.publicKey
+        } catch (err) {
+          console.error('[assessments/submit] PQC signing failed (dev mode):', err)
+        }
+      }
+
+      const completed = {
+        ...current,
+        status: 'completed' as const,
+        score: result.score,
+        riskLevel: result.riskLevel,
+        categoryScores: result.categoryScores,
+        recommendations: result.recommendations,
+        keyFindings: result.keyFindings,
+        pqcHash,
+        pqcSignature,
+        pqcPublicKey,
+        completedAt: new Date().toISOString(),
+      }
+      assessments[idx] = completed
+      assessmentsStore.set(userId, assessments)
+
+      void logAuditEvent({
+        userId,
+        entityType: 'assessment',
+        entityId: id,
+        action: 'completed',
+        details: `Assessment completed with score ${result.score}/100 (${result.riskLevel} risk)`,
+      })
+
+      return NextResponse.json(completed)
+    }
+
+    // Neon DB path
+    const [existing] = await db
+      .select()
+      .from(assessmentsTable)
+      .where(and(eq(assessmentsTable.id, id), eq(assessmentsTable.organizationId, userId)))
+
+    if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+    if (existing.status === 'completed') {
       return NextResponse.json({ error: 'Assessment already completed' }, { status: 400 })
     }
 
-    // Run scoring engine
-    const result = scoreAssessment(current.responses)
+    // Extract answers from blob
+    const storedBlob = (existing.responses ?? {}) as Record<string, unknown>
+    const answers = (storedBlob['answers'] ?? {}) as Record<string, string | boolean>
 
-    // PQC sign the completed assessment (if platform keys are configured)
+    const result = scoreAssessment(answers)
+
     let pqcHash: string | undefined
     let pqcSignature: string | undefined
     let pqcPublicKey: string | undefined
-
     const platformPkHex = process.env['PLATFORM_PQC_PUBLIC_KEY']
     const platformSkHex = process.env['PLATFORM_PQC_SECRET_KEY']
-
     if (platformPkHex && platformSkHex) {
       try {
         const pk = Uint8Array.from(Buffer.from(platformPkHex, 'hex'))
@@ -44,11 +117,7 @@ export async function POST(
           {
             type: 'assessment',
             id,
-            payload: {
-              score: result.score,
-              riskLevel: result.riskLevel,
-              categoryScores: result.categoryScores,
-            },
+            payload: { score: result.score, riskLevel: result.riskLevel, categoryScores: result.categoryScores },
             jurisdiction: (process.env['JURISDICTION'] ?? 'eu') as 'eu' | 'na' | 'in' | 'ae',
           },
           sk,
@@ -58,13 +127,45 @@ export async function POST(
         pqcSignature = stamp.signature
         pqcPublicKey = stamp.publicKey
       } catch (err) {
-        console.error('[assessments/submit] PQC signing failed (dev mode):', err)
+        console.error('[assessments/submit] PQC signing failed:', err)
       }
     }
 
-    const completed = {
-      ...current,
+    // Pack scoring results into the responses blob _meta
+    const updatedBlob = {
+      ...storedBlob,
+      _meta: {
+        ...((storedBlob['_meta'] ?? {}) as Record<string, unknown>),
+        score: result.score,
+        riskLevel: result.riskLevel,
+        categoryScores: result.categoryScores,
+        recommendations: result.recommendations,
+        keyFindings: result.keyFindings,
+      },
+    }
+
+    const [updated] = await db
+      .update(assessmentsTable)
+      .set({
+        status: 'completed',
+        qrsScore: result.score,
+        completedAt: new Date(),
+        responses: updatedBlob,
+        pqcHash,
+        pqcSignature,
+      })
+      .where(and(eq(assessmentsTable.id, id), eq(assessmentsTable.organizationId, userId)))
+      .returning()
+
+    if (!updated) return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+
+    const completedRecord = {
+      id: updated.id,
+      systemId: updated.systemId,
+      userId: updated.organizationId,
       status: 'completed' as const,
+      responses: answers,
+      currentSection: 0,
       score: result.score,
       riskLevel: result.riskLevel,
       categoryScores: result.categoryScores,
@@ -73,13 +174,10 @@ export async function POST(
       pqcHash,
       pqcSignature,
       pqcPublicKey,
-      completedAt: new Date().toISOString(),
+      completedAt: updated.completedAt?.toISOString() ?? new Date().toISOString(),
+      createdAt: updated.createdAt.toISOString(),
     }
 
-    assessments[idx] = completed
-    assessmentsStore.set(userId, assessments)
-
-    // Audit log (fire-and-forget PQC + HCS)
     void logAuditEvent({
       userId,
       entityType: 'assessment',
@@ -88,7 +186,7 @@ export async function POST(
       details: `Assessment completed with score ${result.score}/100 (${result.riskLevel} risk)`,
     })
 
-    return NextResponse.json(completed)
+    return NextResponse.json(completedRecord)
   } catch (error) {
     console.error('[assessments/[id]/submit/POST] Unexpected error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

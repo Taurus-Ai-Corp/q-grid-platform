@@ -4,11 +4,13 @@
  * Design:
  * - PQC signing is synchronous (fast, in-process)
  * - Hedera anchoring is fire-and-forget async (never blocks the response)
+ * - DB insert is fire-and-forget (never blocks the response)
  * - All failures are silently swallowed — audit logging must never crash a request
  */
 
 import { createStamp } from '@taurus/pqc-crypto'
 import { auditStore, type AuditEvent } from './audit-store'
+import { getDb } from './db'
 
 export async function logAuditEvent(params: {
   userId: string
@@ -65,11 +67,35 @@ export async function logAuditEvent(params: {
     void anchorToHedera(event)
   }
 
-  // Persist in store (newest first per user)
+  // Persist in in-memory store (newest first per user) — always, as a fast cache
   const existing = auditStore.get(params.userId) ?? []
   auditStore.set(params.userId, [event, ...existing])
 
+  // Also persist to Neon DB if available (fire-and-forget)
+  void persistToDb(event)
+
   return event
+}
+
+async function persistToDb(event: AuditEvent): Promise<void> {
+  try {
+    const db = getDb()
+    if (!db) return
+
+    const { auditTrail: auditTrailTable } = await import('@taurus/db')
+    await db.insert(auditTrailTable).values({
+      id: event.id,
+      entityType: event.entityType,
+      entityId: event.entityId,
+      action: event.action,
+      hederaTopicId: event.hederaTopicId ?? null,
+      hederaTxId: event.hederaTxId ?? null,
+      hash: event.pqcHash ?? null,
+      pqcSignature: event.pqcSignature ?? null,
+    })
+  } catch {
+    // Never crash audit logging
+  }
 }
 
 async function anchorToHedera(event: AuditEvent): Promise<void> {

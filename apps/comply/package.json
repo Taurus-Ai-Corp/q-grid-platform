@@ -14,6 +14,7 @@
   "dependencies": {
     "@clerk/nextjs": "^7.0.7",
     "@taurus/db": "workspace:*",
+    "drizzle-orm": "^0.39.0",
     "@taurus/hedera": "workspace:*",
     "@taurus/jurisdiction": "workspace:*",
     "@taurus/pqc-crypto": "workspace:*",
