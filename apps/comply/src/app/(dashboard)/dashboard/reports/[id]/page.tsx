@@ -9,6 +9,14 @@ import type { Report } from '@/lib/report-store'
 // ─── Markdown renderer (safe — all user content is HTML-escaped before tagging)
 // Handles: headings, bold/italic/code inline, tables, lists, hr, paragraphs.
 // XSS safe because escapeHtml() runs on every text node before we wrap in tags.
+//
+// Trust model: report.content comes from our own template generator (fully trusted)
+// OR an AI model via cloud/sovereign mode (semi-trusted). Either way, all text nodes
+// pass through escapeHtml() before being inserted into HTML tags, so injected
+// payloads like <script> or javascript: URLs are neutralised at the text level.
+// The markdown parser never emits raw <a href> or <img src> tags — only the safe
+// inline elements: <strong>, <em>, <code>. OWASP XSS vectors covered: &, <, >, ",
+// ', / — per https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
 
 function escapeHtml(s: string): string {
   return s
@@ -16,7 +24,8 @@ function escapeHtml(s: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+    .replace(/'/g, '&#039;')
+    .replace(/\//g, '&#x2F;')
 }
 
 function renderInline(raw: string): string {
