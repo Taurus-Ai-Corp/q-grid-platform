@@ -2,29 +2,44 @@ import { describe, it, expect } from 'vitest'
 import { detectJurisdiction, getJurisdictionConfig } from '../src/index.js'
 
 describe('jurisdiction detection', () => {
-  it('detects NA from comply.q-grid.net', () => {
-    expect(detectJurisdiction('comply.q-grid.net')).toBe('na')
+  // Subdomain pattern (primary — eu.q-grid.net)
+  it('detects EU from eu.q-grid.net', () => {
+    expect(detectJurisdiction('eu.q-grid.net')).toBe('eu')
   })
-  it('detects NA from comply.q-grid.ca', () => {
-    expect(detectJurisdiction('comply.q-grid.ca')).toBe('na')
+  it('detects NA from na.q-grid.net', () => {
+    expect(detectJurisdiction('na.q-grid.net')).toBe('na')
   })
-  it('detects EU from comply.q-grid.eu', () => {
+  it('detects IN from in.q-grid.net', () => {
+    expect(detectJurisdiction('in.q-grid.net')).toBe('in')
+  })
+  it('detects AE from ae.q-grid.net', () => {
+    expect(detectJurisdiction('ae.q-grid.net')).toBe('ae')
+  })
+
+  // Root domain → NA default
+  it('detects NA from q-grid.net', () => {
+    expect(detectJurisdiction('q-grid.net')).toBe('na')
+  })
+
+  // Legacy TLD patterns (backward compat)
+  it('detects EU from comply.q-grid.eu (legacy)', () => {
     expect(detectJurisdiction('comply.q-grid.eu')).toBe('eu')
   })
-  it('detects IN from comply.q-grid.in', () => {
+  it('detects IN from comply.q-grid.in (legacy)', () => {
     expect(detectJurisdiction('comply.q-grid.in')).toBe('in')
   })
-  it('detects AE from comply.q-grid.ae', () => {
-    expect(detectJurisdiction('comply.q-grid.ae')).toBe('ae')
-  })
+
+  // Defaults
   it('falls back to NA for localhost', () => {
     expect(detectJurisdiction('localhost')).toBe('na')
   })
+
+  // Env override
   it('prefers env override', () => {
-    expect(detectJurisdiction('comply.q-grid.eu', 'in')).toBe('in')
+    expect(detectJurisdiction('eu.q-grid.net', 'in')).toBe('in')
   })
   it('ignores invalid env override', () => {
-    expect(detectJurisdiction('comply.q-grid.eu', 'invalid')).toBe('eu')
+    expect(detectJurisdiction('eu.q-grid.net', 'invalid')).toBe('eu')
   })
 })
 
