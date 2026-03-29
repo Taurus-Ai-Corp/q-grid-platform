@@ -153,18 +153,70 @@ The sovereign AI architecture is already built. To add Nemotron:
 
 ## Metrics
 
-- 48 git commits
-- 124 tests passing
+- 55 git commits
+- 126 tests passing
 - 8/8 turbo build tasks
-- 41 source files in comply app
-- 8 API routes
-- 11 database tables
-- 6 EU AI Act assessment sections (18 questions)
-- 3 report generation modes (template/cloud/sovereign)
-- 1 deployed app (landing)
+- 16/16 launch readiness checks PASS
+- 2 deployed apps (landing + comply)
 - 1 provisioned database (Neon Frankfurt)
 - 0 paying customers (yet)
 
 ---
+
+## SALES & GTM — For OpenCode + Nemotron 3
+
+### Company Structure
+- **Entity:** Wyoming LLC (US SaaS company)
+- **Founder:** Effin Fernandez (Canadian citizen, Ontario)
+- **Needs:** EIN, US business bank account, Stripe connected to LLC
+
+### Immediate Sales Actions
+
+1. **Scan 50 EU fintech domains** using q-grid.net/scan
+   - Generate QRS scores for each
+   - Use `/pqc-leads` skill to score and prioritize
+
+2. **Cold outreach** (50 personalized emails)
+   - Template: "[Company]'s AI systems and August 2026"
+   - Include their actual QRS score
+   - Pain points: `/Users/taurus_ai/Desktop/LinkedIn - Effin/research/pain-point-database.md`
+   - 3 campaign pillars ready: "You Can't Migrate What You Can't See", "Stop Building Compliance Theater", "One Platform, Five Frameworks"
+
+3. **LinkedIn content** (3-5 posts/week)
+   - 40% EU AI Act education
+   - 25% Blockchain + compliance thought leadership
+   - 20% Customer/user stories
+   - 15% Contrarian takes
+
+4. **Product Hunt launch**
+   - Assets ready: landing page, blog, free scan, pricing
+   - Launch Tuesday-Thursday, 12:01 AM PST
+   - 90-day free trial for first 100 signups
+   - Blog post: "Quantum Threat to Blockchain" (1,800 words, 12 real quotes)
+
+5. **Proposal generation** for enterprise leads
+   - Use `/proposal-generation` skill
+   - PQC assessment: $25K-$50K
+   - Hybrid signature: $75K-$150K
+   - Key migration: $250K-$1M+
+
+### Key Research Files
+- Pain points: `~/Desktop/LinkedIn - Effin/research/pain-point-database.md`
+- GTM strategy: `~/Desktop/LinkedIn - Effin/Q-Grid-Comply-GTM-Research.md`
+- Launch package: `~/Desktop/LinkedIn - Effin/Comply-Q-Grid-Launch-Package.html`
+- Competitive intel: `q-grid-platform/competitive-intelligence-eu-ai-act.md`
+- HuggingFace research: `q-grid-platform/findings.md`
+
+### Revenue Targets
+- First paying customer: Week 1
+- MRR target: $1,500 by Day 30
+- Product Hunt: 200+ upvotes, 50+ signups
+
+### Sovereign AI Sales Angle
+Enterprise customers get self-hosted AI report generation. Data never leaves their infrastructure. Use Nemotron 3 Super as the recommended sovereign model (French Mistral for EU, Nemotron for NA).
+
+---
+
+**The architecture is sound. The code is tested. The differentiator (PQC + Hedera) is real. Ship it.**
 
 **The architecture is sound. The code is tested. The differentiator (PQC + Hedera) is real. Ship it.**
