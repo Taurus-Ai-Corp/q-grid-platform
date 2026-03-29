@@ -210,7 +210,7 @@ export default function ScanResultsPage() {
               </div>
             </div>
             <a
-              href={`https://comply.q-grid.net/sign-up?domain=${encodeURIComponent(domain)}`}
+              href={`https://eu.q-grid.net/sign-up?domain=${encodeURIComponent(domain)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary shrink-0 self-start"
@@ -411,6 +411,91 @@ export default function ScanResultsPage() {
             </div>
           )}
 
+          {/* ── Pricing tiers ── */}
+          <div className="border border-[var(--graphite-ghost)] bg-[var(--bone-deep)] mb-px">
+            <div className="px-6 py-4 border-b border-[var(--graphite-ghost)]">
+              <p className="font-mono text-[11px] text-[var(--accent)] tracking-[0.1em] uppercase">
+                PQC Assessment Services
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--graphite-ghost)]">
+              {/* Starter */}
+              <div className="bg-[var(--bone-deep)] px-6 py-6">
+                <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--graphite-med)] mb-2">Starter</p>
+                <p className="font-[var(--font-heading)] text-[28px] font-bold text-[var(--graphite)] leading-none mb-1">
+                  €399<span className="font-mono text-[13px] text-[var(--graphite-med)] font-normal"> / mo</span>
+                </p>
+                <p className="font-mono text-[12px] text-[var(--graphite-med)] mb-5">Single framework assessment</p>
+                <ul className="space-y-2 mb-6">
+                  {['1 user seat', 'EU AI Act assessment', 'Basic dashboard', '5 engines active', 'Email support'].map((f) => (
+                    <li key={f} className="flex items-center gap-2 font-mono text-[12px] text-[var(--graphite-med)]">
+                      <span className="text-[var(--accent)] text-[10px]">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="https://eu.q-grid.net/sign-up"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary text-[11px] py-[8px]"
+                >
+                  Get Started →
+                </a>
+              </div>
+
+              {/* Growth */}
+              <div className="bg-[rgba(0,204,170,0.03)] px-6 py-6 border-x border-[var(--accent)]/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--accent)]">Growth</p>
+                  <span className="font-mono text-[10px] bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/30 px-2 py-[2px]">
+                    RECOMMENDED
+                  </span>
+                </div>
+                <p className="font-[var(--font-heading)] text-[28px] font-bold text-[var(--accent)] leading-none mb-1">
+                  €899<span className="font-mono text-[13px] text-[var(--graphite-med)] font-normal"> / mo</span>
+                </p>
+                <p className="font-mono text-[12px] text-[var(--graphite-med)] mb-5">Multi-framework compliance</p>
+                <ul className="space-y-2 mb-6">
+                  {['5 user seats', 'All framework assessments', 'Quantum key management', '20 engines active', 'Blockchain audit trail', 'Priority support'].map((f) => (
+                    <li key={f} className="flex items-center gap-2 font-mono text-[12px] text-[var(--graphite-med)]">
+                      <span className="text-[var(--accent)] text-[10px]">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="https://eu.q-grid.net/sign-up"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary text-[11px] py-[10px]"
+                >
+                  Get Started →
+                </a>
+              </div>
+
+              {/* Enterprise */}
+              <div className="bg-[var(--bone-deep)] px-6 py-6">
+                <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--graphite-med)] mb-2">Enterprise</p>
+                <p className="font-[var(--font-heading)] text-[22px] font-bold text-[var(--graphite)] leading-none mb-1">
+                  Custom
+                </p>
+                <p className="font-mono text-[12px] text-[var(--graphite-med)] mb-5">Full platform access</p>
+                <ul className="space-y-2 mb-6">
+                  {['Unlimited seats', 'Custom frameworks', 'All engines + agents', 'Dedicated CSM', 'SLA guarantee', 'SSO / SAML'].map((f) => (
+                    <li key={f} className="flex items-center gap-2 font-mono text-[12px] text-[var(--graphite-med)]">
+                      <span className="text-[var(--accent)] text-[10px]">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="mailto:admin@taurusai.io?subject=Enterprise%20PQC%20Assessment"
+                  className="btn-secondary text-[11px] py-[8px]"
+                >
+                  Contact Sales →
+                </a>
+              </div>
+            </div>
+          </div>
+
           {/* ── PQC Verification badge ── */}
           <div className="border border-[var(--accent)]/20 bg-[var(--accent)]/[0.04] mb-px">
             <div className="px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -490,12 +575,12 @@ export default function ScanResultsPage() {
 
               <div className="mt-6 pt-6 border-t border-[var(--graphite-ghost)]">
                 <a
-                  href={`https://comply.q-grid.net/sign-up?domain=${encodeURIComponent(domain)}&qrs=${qrsScore.overall}`}
+                  href={`https://eu.q-grid.net/sign-up?domain=${encodeURIComponent(domain)}&qrs=${qrsScore.overall}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-secondary text-center justify-center w-full"
                 >
-                  Go to comply.q-grid.net →
+                  Go to Q-Grid / Comply →
                 </a>
               </div>
             </div>
