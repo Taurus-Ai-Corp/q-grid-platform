@@ -1,19 +1,19 @@
 const FOOTER_LINKS = {
   Product: [
-    { label: 'Features', href: '#differentiators' },
+    { label: 'Features', href: '/#differentiators' },
+    { label: 'Free PQC Scan', href: '/scan' },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Docs', href: '/docs' },
-    { label: 'API', href: '/docs/api' },
+    { label: 'Blog', href: '/blog' },
   ],
   Company: [
-    { label: 'About', href: '/about' },
-    { label: 'Security', href: '/security' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'GitHub', href: 'https://github.com/Taurus-Ai-Corp/q-grid-platform', external: true },
+    { label: 'Contact', href: 'mailto:admin@taurusai.io' },
+    { label: 'Hedera', href: 'https://hedera.com', external: true },
   ],
   Legal: [
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Terms', href: '/terms' },
-    { label: 'DPA', href: '/dpa' },
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'GDPR', href: '/privacy#gdpr' },
   ],
 }
 
@@ -54,13 +54,14 @@ export default function Footer() {
                 {group}
               </p>
               <ul className="space-y-1">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
+                {links.map((link) => (
+                  <li key={link.label}>
                     <a
-                      href={href}
+                      href={link.href}
+                      {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       className="text-[14px] text-[var(--graphite-med)] hover:text-[var(--accent)] transition-colors duration-200 py-1 block"
                     >
-                      {label}
+                      {link.label}
                     </a>
                   </li>
                 ))}

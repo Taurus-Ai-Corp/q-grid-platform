@@ -19,9 +19,9 @@ export default function Nav() {
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-8">
           {[
-            ['Why Q-Grid', '#differentiators'],
-            ['AI Agents', '#agents'],
-            ['Frameworks', '#frameworks'],
+            ['Why Q-Grid', '/#differentiators'],
+            ['AI Agents', '/#agents'],
+            ['Frameworks', '/#frameworks'],
             ['Blog', '/blog'],
           ].map(([label, href]) => (
             <a
