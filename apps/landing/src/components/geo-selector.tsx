@@ -1,31 +1,37 @@
+'use client'
+
 const GEO_CARDS = [
   {
     flag: '🇨🇦',
     region: 'North America',
-    href: 'https://comply.q-grid.net',
+    href: 'https://na.q-grid.net',
     regs: ['OSFI B-13', 'PIPEDA', 'SOC 2 Type II'],
     tag: 'NA',
+    live: false,
   },
   {
     flag: '🇪🇺',
     region: 'European Union',
-    href: 'https://comply.q-grid.eu',
+    href: 'https://eu.q-grid.net',
     regs: ['EU AI Act', 'GDPR', 'DORA'],
     tag: 'EU',
+    live: true,
   },
   {
     flag: '🇮🇳',
     region: 'India',
-    href: 'https://comply.q-grid.in',
+    href: 'https://in.q-grid.net',
     regs: ['DPDP Act 2023', 'RBI FREE-AI', 'SEBI'],
     tag: 'IN',
+    live: false,
   },
   {
     flag: '🇦🇪',
     region: 'UAE',
-    href: 'https://comply.q-grid.ae',
+    href: 'https://ae.q-grid.net',
     regs: ['VARA', 'DFSA', 'CBUAE'],
     tag: 'AE',
+    live: false,
   },
 ]
 
@@ -48,13 +54,13 @@ export default function GeoSelector() {
 
         {/* Cards grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--graphite-ghost)]">
-          {GEO_CARDS.map(({ flag, region, href, regs, tag }) => (
+          {GEO_CARDS.map(({ flag, region, href, regs, tag, live }) => (
             <a
               key={tag}
-              href={href}
-              className="geo-card block p-8 group"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={live ? href : undefined}
+              onClick={live ? undefined : (e: React.MouseEvent) => e.preventDefault()}
+              className={`geo-card block p-8 group ${!live ? 'opacity-70 cursor-default' : ''}`}
+              {...(live ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             >
               {/* Flag */}
               <div className="text-3xl mb-4" aria-hidden="true">
@@ -85,8 +91,8 @@ export default function GeoSelector() {
               </ul>
 
               {/* CTA */}
-              <span className="font-mono text-[12px] font-medium tracking-[0.06em] uppercase text-[var(--accent)] group-hover:underline">
-                Get Started →
+              <span className={`font-mono text-[12px] font-medium tracking-[0.06em] uppercase ${live ? 'text-[var(--accent)] group-hover:underline' : 'text-[var(--graphite-light)]'}`}>
+                {live ? 'Get Started →' : 'Coming Soon'}
               </span>
             </a>
           ))}

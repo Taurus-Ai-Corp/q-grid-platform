@@ -10,10 +10,14 @@ export default function Nav() {
     >
       <div className="flex items-center justify-between h-16 max-w-[1200px] mx-auto px-6">
         {/* Logo */}
-        <a href="/" className="flex items-center font-mono text-sm font-medium tracking-[0.06em]">
-          <span className="text-[var(--graphite)]">Q-GRID</span>
-          <span className="text-[var(--graphite-med)] mx-1">/</span>
-          <span className="text-[var(--accent)]">COMPLY</span>
+        <a href="/" className="flex flex-col">
+          <span className="font-[var(--font-heading)] text-[15px] font-bold tracking-[0.04em]">
+            <span className="text-[var(--graphite)]">QUANTUM</span>
+            <span className="text-[var(--accent)] ml-1">GRID</span>
+          </span>
+          <span className="font-mono text-[8px] tracking-[0.12em] uppercase text-[var(--graphite-light)]">
+            by TAURUS AI Corp
+          </span>
         </a>
 
         {/* Nav links */}

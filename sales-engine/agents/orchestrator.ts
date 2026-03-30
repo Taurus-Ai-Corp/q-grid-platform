@@ -324,9 +324,21 @@ if (import.meta.url.endsWith(process.argv[1])) {
     
     // Export results
     const csv = orchestrator.exportLeads();
+    const status = orchestrator.getStatus();
+    
+    // Ensure directories exist
+    import fs from 'fs';
+    if (!fs.existsSync('./data/leads')) fs.mkdirSync('./data/leads', { recursive: true });
+    if (!fs.existsSync('./data/campaigns')) fs.mkdirSync('./data/campaigns', { recursive: true });
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    fs.writeFileSync(`./data/leads/eu-scan-leads-${timestamp}.csv`, csv);
+    fs.writeFileSync(`./data/campaigns/campaign-status-${timestamp}.json`, JSON.stringify(status, null, 2));
+    
+    console.log(`\n📊 Results saved to data/leads/ and data/campaigns/`);
     console.log(`\n${csv}\n`);
     
     console.log('\n✅ Campaign complete!');
-    console.log(JSON.stringify(orchestrator.getStatus(), null, 2));
+    console.log(JSON.stringify(status, null, 2));
   })();
 }

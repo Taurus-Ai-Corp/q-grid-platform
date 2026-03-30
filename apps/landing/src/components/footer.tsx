@@ -25,10 +25,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-12">
           {/* Brand */}
           <div>
-            <div className="font-mono text-[14px] font-medium tracking-[0.06em] mb-4">
-              <span className="text-[var(--graphite)]">Q-GRID</span>
-              <span className="text-[var(--graphite-med)] mx-1">/</span>
-              <span className="text-[var(--accent)]">COMPLY</span>
+            <div className="mb-4">
+              <div className="font-[var(--font-heading)] text-[16px] font-bold tracking-[0.04em]">
+                <span className="text-[var(--graphite)]">QUANTUM</span>
+                <span className="text-[var(--accent)] ml-1">GRID</span>
+              </div>
+              <div className="font-mono text-[9px] tracking-[0.12em] uppercase text-[var(--graphite-light)] mt-0.5">
+                by TAURUS AI Corp
+              </div>
             </div>
             <p className="text-[14px] leading-[1.6] text-[var(--graphite-med)] max-w-[300px]">
               The first compliance-first post-quantum cryptography platform. Built for security

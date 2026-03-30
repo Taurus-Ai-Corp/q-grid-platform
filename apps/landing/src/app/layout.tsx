@@ -7,27 +7,27 @@ import { Analytics } from '../components/analytics'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Q-Grid Comply',
-    default: 'Q-Grid Comply — Post-Quantum Compliance Infrastructure',
+    template: '%s | Quantum Grid by TAURUS AI Corp',
+    default: 'Quantum Grid — Post-Quantum Compliance Infrastructure by TAURUS AI Corp',
   },
   description:
     'The first compliance-first post-quantum cryptography platform. Get quantum-safe in 45 minutes, not months. NIST FIPS 203/204, EU AI Act, SWIFT 2027.',
   openGraph: {
-    title: 'Q-Grid Comply — Post-Quantum Compliance Infrastructure',
+    title: 'Quantum Grid — Post-Quantum Compliance Infrastructure by TAURUS AI Corp',
     description:
       'Get quantum-safe in 45 minutes, not months. NIST FIPS 203/204, EU AI Act Aug 2026, SWIFT 2027.',
-    url: 'https://comply.q-grid.net',
-    siteName: 'Q-Grid Comply',
+    url: 'https://q-grid.net',
+    siteName: 'Quantum Grid',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Q-Grid Comply — Post-Quantum Compliance Infrastructure',
+    title: 'Quantum Grid — Post-Quantum Compliance by TAURUS AI Corp',
     description:
       'Get quantum-safe in 45 minutes, not months. 37 AI Agents. NIST FIPS 203/204.',
   },
-  metadataBase: new URL('https://comply.q-grid.net'),
+  metadataBase: new URL('https://q-grid.net'),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
