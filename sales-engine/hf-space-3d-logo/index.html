@@ -35,7 +35,7 @@ body {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  z-index: 1;
+  z-index: 0;
 }
 
 .hero-overlay {
@@ -43,7 +43,6 @@ body {
   z-index: 2;
   text-align: center;
   pointer-events: none;
-  margin-top: 80px;
 }
 
 .hero-logo-text {
@@ -411,7 +410,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0.6, 6);
+camera.position.set(0, 0, 6);
 
 // Bloom — subtle, not overwhelming
 const composer = new EffectComposer(renderer);
@@ -488,13 +487,15 @@ nodes.forEach((pos, i) => {
   cubeGroup.add(mesh);
   nodeMeshes.push(mesh);
 
-  // Tiny glow shell — only on center node
+  // Tiny glow shell — only on center node, very subtle
   if (isCenter) {
-    const glowGeo = new THREE.SphereGeometry(r * 4, 16, 16);
+    const glowGeo = new THREE.SphereGeometry(r * 2.5, 16, 16);
     const glowMat = new THREE.MeshBasicMaterial({
-      color: TEAL, transparent: true, opacity: 0.08, side: THREE.BackSide,
+      color: TEAL, transparent: true, opacity: 0.05, side: THREE.BackSide,
     });
-    cubeGroup.add(new THREE.Mesh(glowGeo, glowMat).translateX(pos.x).translateY(pos.y).translateZ(pos.z));
+    const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+    glowMesh.position.copy(pos);
+    cubeGroup.add(glowMesh);
   }
 });
 
@@ -513,8 +514,12 @@ addEdges(bodyDiags, 0.05, TEAL_DIM);     // Body diagonals — barely visible
 addEdges(qEdge, 0.25);                   // Q-tail
 addEdges(centerSpokes, 0.04, TEAL_DIM);  // Center spokes — ghost lines
 
-// Position cube in upper portion of viewport
-cubeGroup.position.set(0, 1.0, 0);
+// Position cube top-right — fully visible, aesthetic corner placement
+cubeGroup.position.set(2.4, 1.7, 0);
+cubeGroup.scale.setScalar(0.45);
+// Isometric tilt for futuristic feel
+cubeGroup.rotation.x = 0.5;
+cubeGroup.rotation.y = -0.7;
 scene.add(cubeGroup);
 
 // ==============================
@@ -569,17 +574,19 @@ function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
 
-  // Smooth mouse follow — subtle tilt, not wild rotation
-  const targetRotY = mouseX * 0.25;
-  const targetRotX = -mouseY * 0.15;
-  cubeGroup.rotation.y += (targetRotY - cubeGroup.rotation.y) * 0.03;
-  cubeGroup.rotation.x += (targetRotX - cubeGroup.rotation.x) * 0.03;
+  // Smooth mouse follow — very gentle parallax, not full rotation
+  const baseRotX = 0.5;
+  const baseRotY = -0.7;
+  const targetRotY = baseRotY + mouseX * 0.12;
+  const targetRotX = baseRotX + (-mouseY * 0.08);
+  cubeGroup.rotation.y += (targetRotY - cubeGroup.rotation.y) * 0.025;
+  cubeGroup.rotation.x += (targetRotX - cubeGroup.rotation.x) * 0.025;
 
-  // Slow continuous spin
-  cubeGroup.rotation.y += 0.0015;
+  // Very slow continuous spin layered on top
+  cubeGroup.rotation.y += 0.0008;
 
-  // Very subtle breathing scale
-  const breath = 1 + Math.sin(t * 0.4) * 0.012;
+  // Very subtle breathing scale — anchored at 0.45
+  const breath = 0.45 + Math.sin(t * 0.4) * 0.004;
   cubeGroup.scale.setScalar(breath);
 
   // Center node subtle pulse

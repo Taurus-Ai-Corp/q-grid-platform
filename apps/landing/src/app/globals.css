@@ -15,15 +15,19 @@ body {
   line-height: 1.6;
 }
 
-/* Noise texture overlay */
+/* ================================================================
+   1. GRAIN / NOISE TEXTURE OVERLAY (3-5% opacity)
+   ================================================================ */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  mix-blend-mode: overlay;
 }
 
 /* Glass morphism surface */
@@ -42,21 +46,38 @@ body::after {
   background-clip: text;
 }
 
-/* Nav CTA button */
-.nav-cta-btn {
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
-  color: #0B0E14;
-}
-.nav-cta-btn:hover {
-  box-shadow: 0 0 20px var(--accent-glow);
+/* ================================================================
+   4. HEADING TYPOGRAPHY TIGHTENING — premium compressed look
+   ================================================================ */
+h1, h2, h3 {
+  letter-spacing: -0.03em;
 }
 
-/* Primary button */
+/* ================================================================
+   2. METALLIC CTA BUTTONS
+   ================================================================ */
+
+/* Nav CTA button */
+.nav-cta-btn {
+  background: linear-gradient(135deg, #00CCAA, #008E8A);
+  color: #0B0E14;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-cta-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px rgba(0, 204, 170, 0.2), 0 0 40px rgba(0, 204, 170, 0.08);
+}
+.nav-cta-btn:active {
+  transform: scale(0.98);
+}
+
+/* Primary button — metallic gradient treatment */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  background: linear-gradient(135deg, #00CCAA 0%, #008E8A 50%, #00A89C 100%);
+  background-size: 200% 200%;
   color: #0B0E14;
   font-family: var(--font-mono);
   font-size: 13px;
@@ -66,12 +87,36 @@ body::after {
   padding: 14px 28px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 55%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-primary:hover::before {
+  transform: translateX(100%);
 }
 .btn-primary:hover {
-  box-shadow: 0 0 20px var(--accent-glow);
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px rgba(0, 204, 170, 0.2), 0 0 40px rgba(0, 204, 170, 0.08);
   transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: scale(0.98) translateY(0);
+  filter: brightness(0.95);
 }
 
 /* Secondary button */
@@ -111,11 +156,12 @@ body::after {
 .geo-card {
   border: 1px solid var(--graphite-ghost);
   background: var(--bone-deep);
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.3s, background 0.3s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .geo-card:hover {
   border-color: var(--accent);
   background: rgba(0, 204, 170, 0.04);
+  transform: translateY(-2px);
 }
 
 /* Diff grid — gap rendered as border lines */
@@ -139,4 +185,131 @@ body::after {
 .comp-col-highlight th {
   background: rgba(0, 204, 170, 0.06);
   color: var(--accent);
+}
+
+/* ================================================================
+   3. ORGANIC SECTION DIVIDERS — gradient fades
+   ================================================================ */
+.section-divider {
+  position: relative;
+  height: 80px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.section-divider--dark-to-deep {
+  background: linear-gradient(180deg, var(--bone) 0%, var(--bone-deep) 100%);
+}
+.section-divider--deep-to-dark {
+  background: linear-gradient(180deg, var(--bone-deep) 0%, var(--bone) 100%);
+}
+/* SVG wave embedded as pseudo-element */
+.section-divider::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: var(--bone-deep);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 40' preserveAspectRatio='none'%3E%3Cpath d='M0,20 C360,40 720,0 1080,20 C1260,30 1380,25 1440,20 L1440,40 L0,40 Z' fill='%23000'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 40' preserveAspectRatio='none'%3E%3Cpath d='M0,20 C360,40 720,0 1080,20 C1260,30 1380,25 1440,20 L1440,40 L0,40 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+}
+.section-divider--deep-to-dark::after {
+  background: var(--bone);
+}
+
+/* ================================================================
+   5. SCROLL-TRIGGERED ENTRANCE ANIMATIONS (CSS-only)
+   ================================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Stagger delays for child elements */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 80ms; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 240ms; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 320ms; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 400ms; }
+.reveal-stagger > .reveal:nth-child(7) { transition-delay: 480ms; }
+.reveal-stagger > .reveal:nth-child(8) { transition-delay: 560ms; }
+
+/* Hero-specific entrance — slightly larger travel distance */
+.reveal-hero {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-hero.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================================
+   6. NO DEAD ZONES — floating micro-dots & spotlight
+   ================================================================ */
+
+/* Floating micro-dots */
+@keyframes float-drift-1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  25% { transform: translate(12px, -18px); opacity: 0.6; }
+  50% { transform: translate(-8px, -32px); opacity: 0.35; }
+  75% { transform: translate(16px, -12px); opacity: 0.55; }
+}
+@keyframes float-drift-2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.25; }
+  33% { transform: translate(-16px, -24px); opacity: 0.5; }
+  66% { transform: translate(10px, -40px); opacity: 0.3; }
+}
+@keyframes float-drift-3 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.2; }
+  20% { transform: translate(20px, -14px); opacity: 0.45; }
+  60% { transform: translate(-12px, -28px); opacity: 0.25; }
+  80% { transform: translate(8px, -20px); opacity: 0.5; }
+}
+
+.micro-dots {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.micro-dot {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.micro-dot:nth-child(odd) { animation: float-drift-1 12s ease-in-out infinite; }
+.micro-dot:nth-child(even) { animation: float-drift-2 16s ease-in-out infinite; }
+.micro-dot:nth-child(3n) { animation: float-drift-3 20s ease-in-out infinite; }
+
+/* Hero spotlight — radial gradient that follows mouse (positioned via JS) */
+.hero-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(0, 204, 170, 0.06) 0%,
+    transparent 70%
+  );
+}
+.hero-spotlight.is-active {
+  opacity: 1;
 }

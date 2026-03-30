@@ -7,11 +7,11 @@ const STATS = [
 
 export default function ProofBar() {
   return (
-    <section className="py-20 border-t border-b border-[var(--graphite-ghost)]">
+    <section className="py-20">
       <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 reveal-stagger">
           {STATS.map(({ number, unit, label }) => (
-            <div key={unit} className="text-center">
+            <div key={unit} className="reveal text-center">
               <div
                 className="font-mono font-light tracking-[-0.04em] leading-none text-[var(--accent)]"
                 style={{ fontSize: 'clamp(36px, 4vw, 52px)' }}

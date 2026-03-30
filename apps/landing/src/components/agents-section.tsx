@@ -19,10 +19,10 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function AgentsSection() {
   return (
-    <section id="agents" className="py-24 border-t border-[var(--graphite-ghost)]">
+    <section id="agents" className="py-24">
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section label */}
-        <div className="flex items-center gap-5 mb-14">
+        <div className="reveal flex items-center gap-5 mb-14">
           <span className="font-mono text-[32px] font-bold text-[var(--accent)] leading-none select-none">
             03
           </span>
@@ -39,7 +39,7 @@ export default function AgentsSection() {
         {/* Two-column layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           {/* Left: agent list */}
-          <div>
+          <div className="reveal">
             <div className="space-y-[2px]">
               {AGENTS.map(({ name, status, delay }) => (
                 <div
@@ -71,7 +71,7 @@ export default function AgentsSection() {
           </div>
 
           {/* Right: description */}
-          <div className="flex flex-col gap-5">
+          <div className="reveal flex flex-col gap-5" style={{ transitionDelay: '150ms' }}>
             <h3
               className="font-[var(--font-heading)] font-bold tracking-[-0.02em] leading-[1.1]"
               style={{ fontSize: 'clamp(24px, 2.5vw, 36px)' }}

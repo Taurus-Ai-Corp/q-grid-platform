@@ -1,3 +1,7 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
+
 const FEATURE_PILLS = [
   'ML-DSA FIPS 204',
   'ML-KEM FIPS 203',
@@ -13,8 +17,50 @@ const STATUS_ITEMS = [
 ]
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const spotlightRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    const spotlight = spotlightRef.current
+    if (!section || !spotlight) return
+
+    function handleMouseMove(e: MouseEvent) {
+      if (!section || !spotlight) return
+      const rect = section.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      spotlight.style.setProperty('--mouse-x', `${x}px`)
+      spotlight.style.setProperty('--mouse-y', `${y}px`)
+    }
+
+    function handleMouseEnter() {
+      spotlight?.classList.add('is-active')
+    }
+
+    function handleMouseLeave() {
+      spotlight?.classList.remove('is-active')
+    }
+
+    section.addEventListener('mousemove', handleMouseMove)
+    section.addEventListener('mouseenter', handleMouseEnter)
+    section.addEventListener('mouseleave', handleMouseLeave)
+
+    return () => {
+      section.removeEventListener('mousemove', handleMouseMove)
+      section.removeEventListener('mouseenter', handleMouseEnter)
+      section.removeEventListener('mouseleave', handleMouseLeave)
+    }
+  }, [])
+
   return (
-    <section className="relative pt-40 pb-20 min-h-screen flex items-center overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative pt-40 pb-20 min-h-screen flex items-center overflow-hidden"
+    >
+      {/* Mouse-following spotlight */}
+      <div ref={spotlightRef} className="hero-spotlight" />
+
       {/* Background grid pattern */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
@@ -28,15 +74,15 @@ export default function Hero() {
 
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6">
         {/* Badge */}
-        <div className="inline-flex items-center gap-3 font-mono text-[11px] font-medium tracking-[0.12em] uppercase text-[var(--accent)] mb-6 px-4 py-[6px] border border-[var(--accent)]">
+        <div className="reveal-hero inline-flex items-center gap-3 font-mono text-[11px] font-medium tracking-[0.12em] uppercase text-[var(--accent)] mb-6 px-4 py-[6px] border border-[var(--accent)]">
           <span className="block w-5 h-px bg-[var(--accent)]" aria-hidden="true" />
           /// QUANTUM-SAFE COMPLIANCE INFRASTRUCTURE
         </div>
 
         {/* H1 */}
         <h1
-          className="font-[var(--font-heading)] font-bold leading-[1.05] tracking-[-0.02em] mb-4"
-          style={{ fontSize: 'clamp(40px, 5vw, 64px)', maxWidth: '720px' }}
+          className="reveal-hero font-[var(--font-heading)] font-bold leading-[1.05] mb-4"
+          style={{ fontSize: 'clamp(40px, 5vw, 64px)', maxWidth: '720px', transitionDelay: '120ms' }}
         >
           Compliance-First
           <br />
@@ -46,12 +92,18 @@ export default function Hero() {
         </h1>
 
         {/* Sub-headline */}
-        <p className="text-[22px] font-normal text-[var(--graphite-med)] tracking-[-0.01em] mt-3">
+        <p
+          className="reveal-hero text-[22px] font-normal text-[var(--graphite-med)] tracking-[-0.01em] mt-3"
+          style={{ transitionDelay: '240ms' }}
+        >
           Get quantum-safe in 45 minutes, not months.
         </p>
 
         {/* Description */}
-        <p className="mt-6 max-w-[560px] text-[16px] leading-[1.7] text-[var(--graphite-med)]">
+        <p
+          className="reveal-hero mt-6 max-w-[560px] text-[16px] leading-[1.7] text-[var(--graphite-med)]"
+          style={{ transitionDelay: '360ms' }}
+        >
           Built on{' '}
           <span className="font-mono text-[var(--accent)] text-[13px]">NIST FIPS 203/204</span>,
           aligned with the{' '}
@@ -63,7 +115,10 @@ export default function Hero() {
         </p>
 
         {/* Feature pills */}
-        <div className="flex flex-wrap items-center gap-2 mt-8">
+        <div
+          className="reveal-hero flex flex-wrap items-center gap-2 mt-8"
+          style={{ transitionDelay: '480ms' }}
+        >
           {FEATURE_PILLS.map((pill) => (
             <span
               key={pill}
@@ -75,7 +130,10 @@ export default function Hero() {
         </div>
 
         {/* CTA buttons */}
-        <div className="flex items-center gap-4 mt-10 flex-wrap">
+        <div
+          className="reveal-hero flex items-center gap-4 mt-10 flex-wrap"
+          style={{ transitionDelay: '600ms' }}
+        >
           <a href="/scan" className="btn-primary">
             Free PQC Scan
             <span aria-hidden="true">→</span>
@@ -86,7 +144,10 @@ export default function Hero() {
         </div>
 
         {/* Status bar */}
-        <div className="flex items-center flex-wrap gap-x-8 gap-y-3 mt-16 pt-6 border-t border-[var(--graphite-ghost)] font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--graphite-med)]">
+        <div
+          className="reveal-hero flex items-center flex-wrap gap-x-8 gap-y-3 mt-16 pt-6 border-t border-[var(--graphite-ghost)] font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--graphite-med)]"
+          style={{ transitionDelay: '720ms' }}
+        >
           {STATUS_ITEMS.map(({ label, color }) => (
             <div key={label} className="flex items-center gap-2">
               <span className={`w-[6px] h-[6px] rounded-full ${color}`} aria-hidden="true" />

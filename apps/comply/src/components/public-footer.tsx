@@ -2,22 +2,21 @@ import Link from 'next/link'
 
 const FOOTER_LINKS = {
   Product: [
-    { label: 'Features', href: '#features' },
+    { label: 'Features', href: '/#features' },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'EU AI Act', href: '#regulations' },
-    { label: 'Security', href: '#security' },
+    { label: 'Free PQC Scan', href: 'https://q-grid.net/scan', external: true },
+    { label: 'Dashboard', href: '/dashboard' },
   ],
   Company: [
-    { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Careers', href: '/careers' },
+    { label: 'Q-Grid.net', href: 'https://q-grid.net', external: true },
+    { label: 'Contact', href: 'mailto:admin@taurusai.io', external: true },
+    { label: 'GitHub', href: 'https://github.com/Taurus-Ai-Corp/q-grid-platform', external: true },
+    { label: 'Hedera', href: 'https://hedera.com', external: true },
   ],
   Legal: [
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms of Service', href: '/terms' },
-    { label: 'GDPR', href: '/gdpr' },
-    { label: 'Cookie Policy', href: '/cookies' },
+    { label: 'Privacy Policy', href: 'https://q-grid.net/privacy', external: true },
+    { label: 'Terms of Service', href: 'https://q-grid.net/terms', external: true },
+    { label: 'GDPR', href: 'https://q-grid.net/privacy#gdpr', external: true },
   ],
 }
 
@@ -29,8 +28,13 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
           {/* Brand */}
           <div className="col-span-1">
-            <div className="font-[var(--font-heading)] text-base font-bold text-[var(--graphite)] mb-3">
-              <span className="text-[var(--accent)]">COMPLY</span>.Q-GRID
+            <div className="mb-3">
+              <div className="font-[var(--font-heading)] text-base font-bold text-[var(--graphite)]">
+                Q-GRID <span className="text-[var(--graphite-faint)]">/</span> <span className="text-[var(--accent)]">COMPLY</span>
+              </div>
+              <div className="font-mono text-[9px] tracking-[0.12em] uppercase text-[var(--graphite-light)] mt-0.5">
+                by TAURUS AI Corp
+              </div>
             </div>
             <p className="text-sm text-[var(--graphite-med)] leading-relaxed max-w-[220px]">
               EU AI Act compliance automation with blockchain audit trails and
@@ -47,12 +51,23 @@ export function PublicFooter() {
               <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-[var(--graphite-med)] hover:text-[var(--graphite)] transition-colors"
-                    >
-                      {link.label}
-                    </Link>
+                    {'external' in link && link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-[var(--graphite-med)] hover:text-[var(--graphite)] transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-sm text-[var(--graphite-med)] hover:text-[var(--graphite)] transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

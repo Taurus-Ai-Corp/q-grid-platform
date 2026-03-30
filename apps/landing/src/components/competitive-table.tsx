@@ -91,13 +91,13 @@ const HEADERS = [
 
 export default function CompetitiveTable() {
   return (
-    <section id="compare" className="py-[100px] bg-[var(--bone-deep)] border-t border-[var(--graphite-ghost)]">
+    <section id="compare" className="py-[100px] bg-[var(--bone-deep)]">
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section label */}
-        <div className="flex items-baseline gap-4 mb-12">
+        <div className="reveal flex items-baseline gap-4 mb-12">
           <span className="font-mono text-[14px] text-[var(--accent)] tracking-[0.02em]">04</span>
           <div>
-            <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-[-0.02em] leading-[1.2] text-[var(--graphite)]">
+            <h2 className="font-[var(--font-heading)] text-[28px] font-semibold leading-[1.2] text-[var(--graphite)]">
               Competitive Comparison
             </h2>
             <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--graphite-med)] mt-1">
@@ -107,7 +107,7 @@ export default function CompetitiveTable() {
         </div>
 
         {/* Table — horizontally scrollable on mobile */}
-        <div className="overflow-x-auto border border-[var(--graphite-ghost)]">
+        <div className="reveal overflow-x-auto border border-[var(--graphite-ghost)]">
           <table className="w-full border-collapse text-[14px] min-w-[700px]">
             <thead>
               <tr>
