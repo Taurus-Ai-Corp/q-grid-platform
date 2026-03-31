@@ -3,7 +3,7 @@ import { JurisdictionBadge } from './jurisdiction-badge'
 
 export function PublicNav() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-[var(--graphite-ghost)]">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/90 backdrop-blur-sm border-b border-[var(--graphite-ghost)]">
       <div className="max-w-[1200px] mx-auto px-6 h-full flex items-center justify-between">
         {/* Logo + jurisdiction badge */}
         <div className="flex items-center gap-2.5">

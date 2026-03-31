@@ -66,7 +66,7 @@ const FEATURES = [
 
 export default function EULandingPage() {
   return (
-    <div className="bg-white">
+    <div>
       {/* Hero */}
       <section className="max-w-[1200px] mx-auto px-6 pt-20 pb-24 text-center">
         {/* EU badge */}
@@ -123,7 +123,7 @@ export default function EULandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="bg-[var(--bone)] py-20">
+      <section id="features" className="bg-[var(--bone)]/80 py-20">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-14">
             <h2
@@ -222,7 +222,7 @@ export default function EULandingPage() {
       </section>
 
       {/* CTA section */}
-      <section className="bg-[var(--bone)] py-20">
+      <section className="bg-[var(--bone)]/80 py-20">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <div className="max-w-[560px] mx-auto">
             <Shield className="h-12 w-12 text-[var(--accent)] mx-auto mb-6" />

@@ -106,7 +106,7 @@ export default function LatticeCanvas() {
         height: '100vh',
         zIndex: 0,
         pointerEvents: 'none',
-        opacity: 0.6,
+        opacity: 0.25,
       }}
     />
   )
