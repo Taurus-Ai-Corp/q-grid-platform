@@ -7,7 +7,7 @@
 export interface AuditEvent {
   id: string
   userId: string
-  entityType: 'system' | 'assessment' | 'report'
+  entityType: 'system' | 'assessment' | 'report' | 'organization'
   entityId: string
   action: 'created' | 'updated' | 'completed' | 'generated' | 'signed'
   details: string
