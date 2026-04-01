@@ -36,6 +36,7 @@ const mockAssessment: AssessmentRecord = {
     fundamental_rights: false,
   },
   currentSection: 6,
+  createdAt: new Date('2024-01-15').toISOString(),
   completedAt: new Date('2024-01-20').toISOString(),
 }
 
