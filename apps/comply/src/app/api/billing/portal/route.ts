@@ -1,11 +1,12 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { eq } from 'drizzle-orm'
 import { getStripe } from '@/lib/stripe'
+import { getDb } from '@/lib/db'
 
 // POST /api/billing/portal — create a Stripe Customer Portal session
-// The customerId must be stored on the user record after checkout completes.
-// For MVP we accept it in the request body; production should read from DB.
-export async function POST(req: Request) {
+// Looks up stripeCustomerId from the users table by Clerk ID.
+export async function POST() {
   try {
     const { userId } = await auth()
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -15,8 +16,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Billing not configured' }, { status: 503 })
     }
 
-    const body = await req.json().catch(() => null)
-    const customerId: string | undefined = body?.customerId
+    // Look up Stripe customer ID from DB
+    const db = getDb()
+    let customerId: string | null = null
+    if (db) {
+      const { users } = await import('@taurus/db')
+      const row = await db.query.users.findFirst({
+        where: eq(users.clerkId, userId),
+        columns: { stripeCustomerId: true },
+      })
+      customerId = row?.stripeCustomerId ?? null
+    }
 
     if (!customerId) {
       return NextResponse.json({ error: 'No billing account found — please subscribe first' }, { status: 400 })

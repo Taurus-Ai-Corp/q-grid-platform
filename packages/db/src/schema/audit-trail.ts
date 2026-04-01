@@ -5,6 +5,7 @@ export const auditTrail = pgTable('audit_trail', {
   entityType: text('entity_type').notNull(),
   entityId: uuid('entity_id').notNull(),
   action: text('action').notNull(),
+  userId: text('user_id'),
   hederaTopicId: text('hedera_topic_id'),
   hederaTxId: text('hedera_tx_id'),
   hederaSequence: bigint('hedera_sequence', { mode: 'bigint' }),

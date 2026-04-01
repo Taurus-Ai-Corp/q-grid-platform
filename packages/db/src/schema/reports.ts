@@ -9,6 +9,7 @@ export const reports = pgTable('reports', {
   contentMarkdown: text('content_markdown'),
   aiModel: text('ai_model'),
   aiCostCents: integer('ai_cost_cents'),
+  mode: text('mode').default('template'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   // PQC columns
   pqcHash: text('pqc_hash'),

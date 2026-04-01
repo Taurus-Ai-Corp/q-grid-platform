@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getStripe } from '@/lib/stripe'
 import { logAuditEvent } from '@/lib/audit-logger'
+import { getDb } from '@/lib/db'
+import { eq } from 'drizzle-orm'
 
 // Stripe webhooks must read the raw body — do NOT parse as JSON before verifying
 export const config = {
@@ -51,6 +53,9 @@ export async function POST(req: Request) {
 
         console.log(`[webhooks/stripe] Checkout completed: userId=${userId} plan=${plan} customer=${customerId} subscription=${subscriptionId}`)
 
+        // Persist stripeCustomerId and plan to user record (fire-and-forget)
+        void persistSubscription(userId, customerId, plan as 'starter' | 'growth')
+
         // Log to PQC-signed audit trail
         void logAuditEvent({
           userId,
@@ -82,8 +87,12 @@ export async function POST(req: Request) {
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription
         const userId = subscription.metadata?.['userId'] ?? 'unknown'
+        const customerId = typeof subscription.customer === 'string' ? subscription.customer : subscription.customer?.id ?? ''
 
         console.log(`[webhooks/stripe] Subscription cancelled: userId=${userId} id=${subscription.id}`)
+
+        // Downgrade user to free plan (fire-and-forget)
+        void downgradeUser(customerId)
 
         void logAuditEvent({
           userId,
@@ -103,5 +112,33 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('[webhooks/stripe] Unexpected error:', error)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+  }
+}
+
+// ─── DB Persistence (fire-and-forget, never blocks response) ─────────────────
+
+async function persistSubscription(clerkUserId: string, stripeCustomerId: string, plan: 'starter' | 'growth'): Promise<void> {
+  try {
+    const db = getDb()
+    if (!db) return
+    const { users } = await import('@taurus/db')
+    await db.update(users)
+      .set({ stripeCustomerId, plan })
+      .where(eq(users.clerkId, clerkUserId))
+  } catch (err) {
+    console.error('[webhooks/stripe] Failed to persist subscription:', err)
+  }
+}
+
+async function downgradeUser(stripeCustomerId: string): Promise<void> {
+  try {
+    const db = getDb()
+    if (!db) return
+    const { users } = await import('@taurus/db')
+    await db.update(users)
+      .set({ plan: 'free' })
+      .where(eq(users.stripeCustomerId, stripeCustomerId))
+  } catch (err) {
+    console.error('[webhooks/stripe] Failed to downgrade user:', err)
   }
 }

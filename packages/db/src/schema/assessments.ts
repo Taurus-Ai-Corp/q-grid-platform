@@ -12,6 +12,11 @@ export const assessments = pgTable('assessments', {
   status: text('status').default('draft').notNull(),
   responses: jsonb('responses'),
   qrsScore: integer('qrs_score'),
+  currentSection: integer('current_section').default(0),
+  riskLevel: text('risk_level'),
+  recommendations: jsonb('recommendations'),
+  keyFindings: jsonb('key_findings'),
+  categoryScores: jsonb('category_scores'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   completedAt: timestamp('completed_at'),
   // PQC columns

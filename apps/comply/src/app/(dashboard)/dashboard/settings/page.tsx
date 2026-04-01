@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { CreditCard, Building2, Cpu, Check, ExternalLink, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -60,11 +60,18 @@ export default function SettingsPage() {
 function PlanTab() {
   const [loading, setLoading] = useState<PlanKey | null>(null)
   const [portalLoading, setPortalLoading] = useState(false)
+  const [currentPlan, setCurrentPlan] = useState<PlanKey | null>(null)
+  const [hasStripeCustomer, setHasStripeCustomer] = useState(false)
 
-  // In MVP we don't have a DB-backed subscription record — show "no active plan" state
-  // with upgrade CTAs. When a subscription exists, currentPlan would be populated from DB.
-  // Cast through unknown so TS doesn't infer literal null and narrow PLANS[currentPlan] to never.
-  const currentPlan = null as unknown as PlanKey | null
+  useEffect(() => {
+    fetch('/api/me')
+      .then((r) => r.json() as Promise<{ plan: string | null; stripeCustomerId: string | null }>)
+      .then((data) => {
+        if (data.plan && data.plan !== 'free') setCurrentPlan(data.plan as PlanKey)
+        if (data.stripeCustomerId) setHasStripeCustomer(true)
+      })
+      .catch(() => { /* ignore — fallback to no plan */ })
+  }, [])
 
   const billingConfigured = !!process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY']
 
@@ -92,11 +99,8 @@ function PlanTab() {
   async function handlePortal() {
     setPortalLoading(true)
     try {
-      // In production, customerId would be fetched from DB or Clerk metadata
       const res = await fetch('/api/billing/portal', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerId: undefined }),
       })
       const data = await res.json() as { url?: string; error?: string }
       if (!res.ok || !data.url) {
@@ -144,14 +148,16 @@ function PlanTab() {
               €{((activePlan.priceMonthly ?? 0) / 100).toFixed(0)}/month
             </p>
           </div>
-          <button
-            onClick={handlePortal}
-            disabled={portalLoading}
-            className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold border border-[var(--graphite-ghost)] rounded-[var(--radius)] text-[var(--graphite)] hover:bg-white transition-colors disabled:opacity-50"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            {portalLoading ? 'Loading…' : 'Manage Billing'}
-          </button>
+          {hasStripeCustomer && (
+            <button
+              onClick={handlePortal}
+              disabled={portalLoading}
+              className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold border border-[var(--graphite-ghost)] rounded-[var(--radius)] text-[var(--graphite)] hover:bg-white transition-colors disabled:opacity-50"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              {portalLoading ? 'Loading…' : 'Manage Billing'}
+            </button>
+          )}
         </div>
       ) : (
         <div className="rounded-[var(--radius)] border border-[var(--graphite-ghost)] bg-[var(--graphite-whisper)] p-4">
