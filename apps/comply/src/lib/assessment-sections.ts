@@ -8,6 +8,8 @@ export interface AssessmentQuestion {
   type: 'text' | 'boolean' | 'select'
   options?: string[]
   helpText?: string
+  weight?: number                        // 1-3, default 1
+  riskIndicator?: 'high' | 'medium' | 'low'
 }
 
 export interface AssessmentSection {
@@ -30,17 +32,21 @@ export const euAssessmentSections: AssessmentSection[] = [
         label: 'What is the intended use of this AI system?',
         type: 'text',
         helpText: 'Describe the primary function and purpose',
+        weight: 2,
       },
       {
         id: 'deployment_scope',
         label: 'Describe the deployment scope (users, regions, scale).',
         type: 'text',
+        weight: 1,
       },
       {
         id: 'autonomous_decisions',
         label: 'Does the system make autonomous decisions?',
         type: 'boolean',
         helpText: 'Decisions without human review',
+        weight: 3,
+        riskIndicator: 'high',
       },
     ],
   },
@@ -55,16 +61,22 @@ export const euAssessmentSections: AssessmentSection[] = [
         label: 'Could this system impact fundamental rights?',
         type: 'boolean',
         helpText: 'Privacy, discrimination, freedom of expression',
+        weight: 3,
+        riskIndicator: 'high',
       },
       {
         id: 'safety_risks',
         label: 'Describe any safety risks associated with this system.',
         type: 'text',
+        weight: 3,
+        riskIndicator: 'high',
       },
       {
         id: 'bias_assessment',
         label: 'How has bias been assessed and mitigated?',
         type: 'text',
+        weight: 2,
+        riskIndicator: 'medium',
       },
     ],
   },
@@ -78,16 +90,19 @@ export const euAssessmentSections: AssessmentSection[] = [
         id: 'training_data',
         label: 'Describe the training data used.',
         type: 'text',
+        weight: 2,
       },
       {
         id: 'data_quality',
         label: 'What data quality measures are in place?',
         type: 'text',
+        weight: 2,
       },
       {
         id: 'gdpr_compliant',
         label: 'Is personal data processing GDPR compliant?',
         type: 'boolean',
+        weight: 3,
       },
     ],
   },
@@ -101,16 +116,20 @@ export const euAssessmentSections: AssessmentSection[] = [
         id: 'user_notification',
         label: 'How are users notified they are interacting with AI?',
         type: 'text',
+        weight: 2,
+        riskIndicator: 'medium',
       },
       {
         id: 'explainability',
         label: "Describe the system's explainability capabilities.",
         type: 'text',
+        weight: 2,
       },
       {
         id: 'documentation',
         label: 'Is comprehensive technical documentation available?',
         type: 'boolean',
+        weight: 2,
       },
     ],
   },
@@ -124,16 +143,19 @@ export const euAssessmentSections: AssessmentSection[] = [
         id: 'oversight_measures',
         label: 'What human oversight measures are implemented?',
         type: 'text',
+        weight: 2,
       },
       {
         id: 'override_capability',
         label: 'Can human operators override system decisions?',
         type: 'boolean',
+        weight: 3,
       },
       {
         id: 'monitoring',
         label: 'Describe ongoing monitoring and performance tracking.',
         type: 'text',
+        weight: 2,
       },
     ],
   },
@@ -147,16 +169,19 @@ export const euAssessmentSections: AssessmentSection[] = [
         id: 'accuracy_metrics',
         label: 'What accuracy metrics and benchmarks are used?',
         type: 'text',
+        weight: 2,
       },
       {
         id: 'security_measures',
         label: 'Describe cybersecurity measures in place.',
         type: 'text',
+        weight: 2,
       },
       {
         id: 'adversarial_testing',
         label: 'Has adversarial testing been conducted?',
         type: 'boolean',
+        weight: 2,
       },
     ],
   },

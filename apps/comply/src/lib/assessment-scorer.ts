@@ -1,6 +1,6 @@
 /**
  * EU AI Act assessment scoring engine.
- * Scores each section 0-100, then averages to overall score.
+ * Scores each section 0-100 using per-question weights (1-3), then averages sections.
  * Risk level: 0-25 = unacceptable, 26-50 = high, 51-75 = limited, 76-100 = minimal
  */
 
@@ -24,6 +24,7 @@ const POSITIVE_BOOLEAN_QUESTIONS = new Set([
   'documentation',
   'override_capability',
   'adversarial_testing',
+  'user_notification',
 ])
 
 function scoreBoolean(questionId: string, value: boolean): number {
@@ -45,10 +46,24 @@ function scoreText(value: string): number {
   return 100
 }
 
-function scoreQuestion(questionId: string, type: string, value: string | boolean | undefined): number {
+function scoreSelect(value: string, options: string[]): number {
+  const idx = options.indexOf(value)
+  if (idx === -1) return 0
+  return Math.round(((idx + 1) / options.length) * 100)
+}
+
+function scoreQuestion(
+  questionId: string,
+  type: string,
+  value: string | boolean | undefined,
+  options?: string[],
+): number {
   if (value === undefined || value === null || value === '') return 0
   if (type === 'boolean') {
     return scoreBoolean(questionId, value as boolean)
+  }
+  if (type === 'select' && options && options.length > 0) {
+    return scoreSelect(String(value), options)
   }
   if (type === 'text' || type === 'select') {
     return scoreText(String(value))
@@ -195,8 +210,8 @@ function generateRecommendations(
   }
 
   // Sort by priority
-  const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 }
-  return recs.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+  const priorityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 }
+  return recs.sort((a, b) => (priorityOrder[a.priority] ?? 3) - (priorityOrder[b.priority] ?? 3))
 }
 
 function generateKeyFindings(
@@ -233,6 +248,22 @@ function generateKeyFindings(
     findings.push(`Gaps identified in: ${lowCategories.slice(0, 3).join(', ')} — priority areas for remediation.`)
   }
 
+  // Key risk indicator findings
+  const riskIndicatorQuestions = euAssessmentSections
+    .flatMap((s) => s.questions)
+    .filter((q) => q.riskIndicator === 'high')
+
+  for (const q of riskIndicatorQuestions) {
+    const val = responses[q.id]
+    if (RISK_BOOLEAN_QUESTIONS.has(q.id) && val === true) {
+      if (q.id === 'autonomous_decisions') {
+        findings.push('Autonomous decision-making detected — Annex III high-risk classification may apply.')
+      } else if (q.id === 'fundamental_rights') {
+        findings.push('Fundamental rights impact identified — Fundamental Rights Impact Assessment (FRIA) required.')
+      }
+    }
+  }
+
   if (responses['gdpr_compliant'] === false) {
     findings.push('GDPR non-compliance is a critical blocker — must be resolved before EU market deployment.')
   } else if (responses['gdpr_compliant'] === true) {
@@ -242,15 +273,24 @@ function generateKeyFindings(
   return findings.slice(0, 4)
 }
 
-export function scoreAssessment(responses: Record<string, string | boolean>): ScoringResult {
+export function scoreAssessment(
+  responses: Record<string, string | boolean>,
+  _jurisdiction?: string,
+): ScoringResult {
   const categoryScores: Record<string, number> = {}
 
   for (const section of euAssessmentSections) {
-    const questionScores = section.questions.map((q) =>
-      scoreQuestion(q.id, q.type, responses[q.id]),
-    )
-    const avg = questionScores.reduce((sum, s) => sum + s, 0) / questionScores.length
-    categoryScores[section.id] = Math.round(avg)
+    let weightedSum = 0
+    let totalWeight = 0
+
+    for (const q of section.questions) {
+      const w = q.weight ?? 1
+      const rawScore = scoreQuestion(q.id, q.type, responses[q.id], q.options)
+      weightedSum += rawScore * w
+      totalWeight += w
+    }
+
+    categoryScores[section.id] = totalWeight > 0 ? Math.round(weightedSum / totalWeight) : 0
   }
 
   const sectionIds = euAssessmentSections.map((s) => s.id)
