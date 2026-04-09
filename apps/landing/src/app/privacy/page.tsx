@@ -211,10 +211,10 @@ export default function PrivacyPage() {
                 </thead>
                 <tbody className="divide-y divide-[var(--graphite-ghost)]">
                   {[
-                    ['EU', 'comply.q-grid.eu', 'Frankfurt, Germany (aws-eu-central-1)'],
-                    ['North America', 'comply.q-grid.net', 'US East (aws-us-east-2)'],
-                    ['India', 'comply.q-grid.in', 'Mumbai, India (aws-ap-south-1)'],
-                    ['UAE', 'comply.q-grid.ae', 'Bahrain (aws-me-central-1)'],
+                    ['EU', 'eu.q-grid.net', 'Frankfurt, Germany (aws-eu-central-1)'],
+                    ['North America', 'na.q-grid.net', 'US East (aws-us-east-2)'],
+                    ['India', 'in.q-grid.net', 'Mumbai, India (aws-ap-south-1)'],
+                    ['UAE', 'ae.q-grid.net', 'Bahrain (aws-me-central-1)'],
                   ].map(([region, domain, location]) => (
                     <tr key={region}>
                       <td className="px-4 py-3 text-[var(--graphite)]">{region}</td>

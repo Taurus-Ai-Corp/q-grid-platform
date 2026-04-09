@@ -64,7 +64,7 @@ quantum-grid-mesh/
 graph TB
     subgraph "Client Layer"
         A[q-grid.net Landing] --> B[Free PQC Scan]
-        C[comply.q-grid.eu] --> D[Dashboard]
+        C[eu.q-grid.net] --> D[Dashboard]
         D --> E[Assessment Wizard]
         D --> F[Reports]
         D --> G[Settings / Billing]
@@ -139,9 +139,9 @@ pnpm --filter comply dev
 
 | Jurisdiction | Region | Frameworks | Deployment |
 |-------------|--------|-----------|-----------|
-| European Union | `eu` | EU AI Act, GDPR, DORA, eIDAS 2.0 | comply.q-grid.eu |
+| European Union | `eu` | EU AI Act, GDPR, DORA, eIDAS 2.0 | eu.q-grid.net |
 | North America | `na` | OSFI B-13, PIPEDA, CCCS PQC, NIST CSF | na.q-grid.net |
-| India | `in` | RBI DPSC, IT Act, DPDPA 2023 | comply.q-grid.in |
+| India | `in` | RBI DPSC, IT Act, DPDPA 2023 | in.q-grid.net |
 | UAE | `ae` | TDRA, NESA, ADGM | ae.q-grid.net |
 
 ## Enterprise
@@ -206,7 +206,7 @@ This project is licensed under the [Business Source License 1.1](LICENSE) (BSL 1
 |----------|-----|
 | Website | [q-grid.net](https://q-grid.net) |
 | Free PQC Scan | [q-grid.net/scan](https://q-grid.net/scan) |
-| EU Comply Platform | [comply.q-grid.eu](https://comply.q-grid.eu) |
+| EU Comply Platform | [eu.q-grid.net](https://eu.q-grid.net) |
 | Documentation | [docs/](docs/) |
 | Security Policy | [SECURITY.md](https://github.com/Taurus-Ai-Corp/.github/blob/main/SECURITY.md) |
 | Status | [status.q-grid.net](https://status.q-grid.net) |

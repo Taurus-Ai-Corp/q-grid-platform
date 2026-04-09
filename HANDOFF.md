@@ -80,12 +80,12 @@ Install `stripe` package. Create:
 Tiers: Starter €399/mo, Growth €899/mo, Enterprise custom.
 Stripe webhook should log to audit trail.
 
-### Priority 2: Part 3H — Deploy comply.q-grid.eu
+### Priority 2: Part 3H — Deploy eu.q-grid.net
 
 1. Create Vercel project via API (set rootDirectory=apps/comply, framework=nextjs, nodeVersion=20.x)
 2. Set env vars: DATABASE_URL, CLERK_SECRET_KEY, NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, JURISDICTION=eu, NEXT_PUBLIC_JURISDICTION=eu, PLATFORM_PQC_PUBLIC_KEY, PLATFORM_PQC_SECRET_KEY
 3. Push to trigger deploy
-4. Add custom domain comply.q-grid.eu
+4. Add custom domain eu.q-grid.net
 
 ### Priority 3: Schema Migrations
 
