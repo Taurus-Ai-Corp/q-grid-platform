@@ -8,9 +8,9 @@ const FOOTER_LINKS = {
     { label: 'Dashboard', href: '/dashboard' },
   ],
   Company: [
-    { label: 'Quantum Grid', href: 'https://q-grid.net', external: true },
+    { label: 'GRIDERA', href: 'https://q-grid.net', external: true },
     { label: 'Contact', href: 'mailto:admin@taurusai.io', external: true },
-    { label: 'GitHub', href: 'https://github.com/Taurus-Ai-Corp/q-grid-platform', external: true },
+    { label: 'GitHub', href: 'https://github.com/Taurus-Ai-Corp/Quantum-Grid-Mesh', external: true },
     { label: 'Hedera', href: 'https://hedera.com', external: true },
   ],
   Legal: [
@@ -30,7 +30,7 @@ export function PublicFooter() {
           <div className="col-span-1">
             <div className="mb-3">
               <div className="font-[var(--font-heading)] text-base font-bold text-[var(--graphite)]">
-                Q-GRID <span className="text-[var(--graphite-faint)]">/</span> <span className="text-[var(--accent)]">COMPLY</span>
+                GRIDERA <span className="text-[var(--graphite-faint)]">|</span> <span className="text-[var(--accent)]">COMPLY</span>
               </div>
               <div className="font-mono text-[9px] tracking-[0.12em] uppercase text-[var(--graphite-light)] mt-0.5">
                 by TAURUS AI Corp

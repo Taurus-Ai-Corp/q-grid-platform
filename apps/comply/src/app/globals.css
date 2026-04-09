@@ -3,8 +3,8 @@
 @import "@taurus/ui/styles";
 
 :root {
-  --bone: #F8F9FA;
-  --bone-deep: #FFFFFF;
+  --bone: #F5F1EB;
+  --bone-deep: #FAF8F5;
   --graphite: #1A1D21;
   --graphite-med: #4B5563;
   --graphite-light: #9CA3AF;
@@ -65,7 +65,7 @@ body::after {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: white;
+  background: var(--bone-deep);
 }
 
 /* ================================================================

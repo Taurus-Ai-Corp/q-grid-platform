@@ -130,7 +130,7 @@ export default function OnboardingPage() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="font-[var(--font-heading)] text-2xl font-bold text-[var(--graphite)]">
-          Welcome to Quantum Grid
+          Welcome to GRIDERA Comply
         </h1>
         <p className="text-sm text-[var(--graphite-med)] mt-1">
           Let&apos;s set up your compliance workspace in a few steps.

@@ -130,7 +130,7 @@ export default function EULandingPage() {
               className="font-[var(--font-heading)] font-bold text-[var(--graphite)] mb-4"
               style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}
             >
-              Why Q-Grid Comply?
+              Why GRIDERA Comply?
             </h2>
             <p className="text-[var(--graphite-med)] max-w-[520px] mx-auto">
               Built for fintechs and enterprises who need bulletproof EU compliance

@@ -11,8 +11,8 @@ export function PublicNav() {
             href="/"
             className="font-[var(--font-heading)] text-lg font-bold tracking-tight text-[var(--graphite)]"
           >
-            <span>Q-GRID</span>
-            <span className="text-[var(--graphite-faint)] mx-0.5">/</span>
+            <span>GRIDERA</span>
+            <span className="text-[var(--graphite-faint)] mx-1">|</span>
             <span className="text-[var(--accent)]">COMPLY</span>
           </Link>
           <JurisdictionBadge jurisdiction="eu" size="sm" />

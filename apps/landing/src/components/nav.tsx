@@ -12,8 +12,7 @@ export default function Nav() {
         {/* Logo */}
         <a href="/" className="flex flex-col">
           <span className="font-[var(--font-heading)] text-[15px] font-bold tracking-[0.04em]">
-            <span className="text-[var(--graphite)]">QUANTUM</span>
-            <span className="text-[var(--accent)] ml-1">GRID</span>
+            <span className="text-[var(--accent)]">GRIDERA</span>
           </span>
           <span className="font-mono text-[8px] tracking-[0.12em] uppercase text-[var(--graphite-light)]">
             by TAURUS AI Corp
@@ -23,7 +22,7 @@ export default function Nav() {
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-8">
           {[
-            ['Why Q-Grid', '/#differentiators'],
+            ['Why GRIDERA', '/#differentiators'],
             ['AI Agents', '/#agents'],
             ['Frameworks', '/#frameworks'],
             ['Blog', '/blog'],

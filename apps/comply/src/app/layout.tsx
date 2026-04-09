@@ -4,11 +4,11 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Q-Grid Comply',
-    default: 'Q-Grid Comply — Quantum Grid Compliance for EU AI Act',
+    template: '%s | GRIDERA Comply',
+    default: 'GRIDERA Comply — Post-Quantum Compliance for EU AI Act',
   },
   description:
-    'EU AI Act compliance automation with blockchain audit trails and post-quantum cryptography. Sovereign AI report generation.',
+    'GRIDERA Comply — EU AI Act compliance automation with blockchain audit trails and post-quantum cryptography. Sovereign AI report generation.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -27,8 +27,7 @@ export default function Footer() {
           <div>
             <div className="mb-4">
               <div className="font-[var(--font-heading)] text-[16px] font-bold tracking-[0.04em]">
-                <span className="text-[var(--graphite)]">QUANTUM</span>
-                <span className="text-[var(--accent)] ml-1">GRID</span>
+                <span className="text-[var(--accent)]">GRIDERA</span>
               </div>
               <div className="font-mono text-[9px] tracking-[0.12em] uppercase text-[var(--graphite-light)] mt-0.5">
                 by TAURUS AI Corp

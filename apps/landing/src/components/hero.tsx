@@ -139,7 +139,7 @@ export default function Hero() {
             <span aria-hidden="true">→</span>
           </a>
           <a href="#differentiators" className="btn-secondary">
-            Why Q-Grid
+            Why GRIDERA
           </a>
         </div>
 

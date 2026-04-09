@@ -8,13 +8,13 @@ interface QGridLogoProps {
   color?: string
   /** Size in px — controls the grid icon height */
   size?: number
-  /** Show "Quantum Grid Compliance" subtitle (only in 'mark' variant) */
+  /** Show "GRIDERA Compliance" subtitle (only in 'mark' variant) */
   showSubtitle?: boolean
   className?: string
 }
 
 /**
- * Q-GRID Comply logo — 3x3 grid mesh with diagonal lattice bonds.
+ * GRIDERA Comply logo — 3x3 grid mesh with diagonal lattice bonds.
  *
  * 9 nodes in a regular grid + 4 diagonal lattice connections + Q tail
  * breaking symmetry bottom-right. Center node enlarged (governance).
@@ -87,7 +87,7 @@ export function QGridLogo({
 
   if (variant === 'icon') {
     return (
-      <span className={cn('inline-flex items-center', className)} aria-label="Q-GRID Comply">
+      <span className={cn('inline-flex items-center', className)} aria-label="GRIDERA Comply">
         {gridMesh}
       </span>
     )
@@ -97,16 +97,16 @@ export function QGridLogo({
     return (
       <span
         className={cn('inline-flex flex-col font-[var(--font-heading)] tracking-tight', className)}
-        aria-label="Q-GRID Comply"
+        aria-label="GRIDERA Comply"
       >
         <span className="flex items-baseline gap-0.5">
-          <span className="font-bold">Q-GRID</span>
-          <span className="text-[var(--graphite-faint)] mx-0.5">/</span>
+          <span className="font-bold">GRIDERA</span>
+          <span className="text-[var(--graphite-faint)] mx-0.5">|</span>
           <span className="font-bold" style={{ color }}>COMPLY</span>
         </span>
         {showSubtitle && (
           <span className="text-[0.55em] font-normal tracking-[0.15em] text-[var(--graphite-light)] uppercase">
-            Quantum Grid Compliance
+            GRIDERA Compliance
           </span>
         )}
       </span>
@@ -114,17 +114,17 @@ export function QGridLogo({
   }
 
   return (
-    <span className={cn('inline-flex items-center gap-2.5', className)} aria-label="Q-GRID Comply">
+    <span className={cn('inline-flex items-center gap-2.5', className)} aria-label="GRIDERA Comply">
       {gridMesh}
       <span className="inline-flex flex-col font-[var(--font-heading)] tracking-tight leading-tight">
         <span className="flex items-baseline gap-0.5">
-          <span className="font-bold">Q-GRID</span>
-          <span className="text-[var(--graphite-faint)] mx-0.5">/</span>
+          <span className="font-bold">GRIDERA</span>
+          <span className="text-[var(--graphite-faint)] mx-0.5">|</span>
           <span className="font-bold" style={{ color }}>COMPLY</span>
         </span>
         {showSubtitle && (
           <span className="text-[0.55em] font-normal tracking-[0.15em] text-[var(--graphite-light)] uppercase">
-            Quantum Grid Compliance
+            GRIDERA Compliance
           </span>
         )}
       </span>

@@ -30,8 +30,8 @@ export function BgAnimation() {
     window.addEventListener('resize', resize)
 
     // --- NODES ---
-    const NODE_COUNT = 70
-    const CONNECT_DIST = 200
+    const NODE_COUNT = 50
+    const CONNECT_DIST = 180
 
     interface Node {
       x: number
@@ -49,8 +49,8 @@ export function BgAnimation() {
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * 0.35,
         vy: (Math.random() - 0.5) * 0.35,
-        r: Math.random() * 3 + 3, // 3-6px radius — BIG visible dots
-        baseAlpha: Math.random() * 0.15 + 0.55, // 0.55 - 0.70 — SOLID visible on white
+        r: Math.random() * 1 + 2, // 2-3px radius — subtle dots
+        baseAlpha: Math.random() * 0.15 + 0.3, // 0.3 - 0.45 — subtle on cream
       })
     }
 
@@ -79,12 +79,12 @@ export function BgAnimation() {
           const dy = ni.y - nj.y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < CONNECT_DIST) {
-            const alpha = (1 - dist / CONNECT_DIST) * 0.5
+            const alpha = (1 - dist / CONNECT_DIST) * 0.2
             ctx.beginPath()
             ctx.moveTo(ni.x, ni.y)
             ctx.lineTo(nj.x, nj.y)
             ctx.strokeStyle = `rgba(0, 142, 138, ${alpha})`
-            ctx.lineWidth = 1.2
+            ctx.lineWidth = 0.6
             ctx.stroke()
           }
         }
