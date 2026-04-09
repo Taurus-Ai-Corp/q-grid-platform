@@ -10,7 +10,7 @@ const FOOTER_LINKS = {
   Company: [
     { label: 'GRIDERA', href: 'https://q-grid.net', external: true },
     { label: 'Contact', href: 'mailto:admin@taurusai.io', external: true },
-    { label: 'GitHub', href: 'https://github.com/Taurus-Ai-Corp/q-grid-platform', external: true },
+    { label: 'GitHub', href: 'https://github.com/Taurus-Ai-Corp/Quantum-Grid-Mesh', external: true },
     { label: 'Hedera', href: 'https://hedera.com', external: true },
   ],
   Legal: [

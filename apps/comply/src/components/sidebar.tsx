@@ -36,7 +36,7 @@ export function Sidebar() {
       <div className="px-5 py-4 border-b border-[var(--graphite-ghost)]">
         <div className="flex items-center gap-2">
           <span className="font-[var(--font-heading)] text-base font-bold text-[var(--graphite)]">
-            Q-GRID <span className="text-[var(--graphite-faint)]">/</span> <span className="text-[var(--accent)]">COMPLY</span>
+            GRIDERA <span className="text-[var(--graphite-faint)]">|</span> <span className="text-[var(--accent)]">COMPLY</span>
           </span>
           <JurisdictionBadge jurisdiction="eu" size="sm" />
         </div>

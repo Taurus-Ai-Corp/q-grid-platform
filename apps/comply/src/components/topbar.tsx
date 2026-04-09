@@ -23,7 +23,7 @@ export function Topbar() {
     <header className="h-14 bg-white border-b border-[var(--graphite-ghost)] flex items-center justify-between px-6 shrink-0">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-[var(--graphite-light)]">Q-Grid Comply</span>
+        <span className="text-[var(--graphite-light)]">GRIDERA Comply</span>
         <span className="text-[var(--graphite-ghost)]">/</span>
         <span className="font-medium text-[var(--graphite)]">{pageTitle}</span>
       </div>

@@ -343,7 +343,7 @@ function AIProviderTab() {
           <div>
             <p className="text-sm font-medium text-[var(--graphite)]">Cloud AI</p>
             <p className="text-xs text-[var(--graphite-med)] mt-0.5">
-              Reports generated via Q-Grid AI Gateway (Gemini / OpenAI). Data leaves your network.
+              Reports generated via GRIDERA AI Gateway (Gemini / OpenAI). Data leaves your network.
             </p>
           </div>
         </label>
