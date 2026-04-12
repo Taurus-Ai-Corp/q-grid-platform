@@ -1,8 +1,8 @@
 const STATS = [
-  { number: '45', unit: 'Minutes', label: 'to First Assessment' },
-  { number: '37', unit: 'AI Agents', label: 'Deployed' },
-  { number: '14', unit: 'Compliance', label: 'Frameworks' },
-  { number: '80%', unit: 'Reduction', label: 'in GRC Overhead' },
+  { number: '< 1', unit: 'Minutes', label: 'to First PQC Scan' },
+  { number: '8', unit: 'Compliance', label: 'Engines' },
+  { number: '11', unit: 'Standards', label: 'Tracked' },
+  { number: '5', unit: 'EU Regulations', label: 'Covered' },
 ]
 
 export default function ProofBar() {

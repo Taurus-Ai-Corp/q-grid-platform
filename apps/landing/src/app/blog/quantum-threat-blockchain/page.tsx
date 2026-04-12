@@ -406,7 +406,7 @@ export default function QuantumThreatBlockchain() {
                   Free PQC Compliance Scan
                 </h3>
                 <p className="text-[15px] leading-[1.7] text-[var(--graphite-med)] mb-6">
-                  Assess your quantum readiness in 45 minutes. Get your Quantum Risk Score, a cryptographic
+                  Assess your quantum readiness in minutes. Get your Quantum Risk Score, a cryptographic
                   inventory snapshot, and a prioritized migration roadmap.
                 </p>
                 <a

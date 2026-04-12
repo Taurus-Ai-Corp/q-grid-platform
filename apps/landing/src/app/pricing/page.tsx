@@ -20,7 +20,7 @@ const TIERS = [
     features: [
       '1 user seat',
       'EU AI Act assessment only',
-      '5 AI agents',
+      'Core compliance engines',
       'Basic audit trail (database-backed)',
       'Email support',
       'Clerk SSO',
@@ -39,8 +39,8 @@ const TIERS = [
     popular: true,
     features: [
       '5 user seats',
-      'All 14+ compliance frameworks',
-      '20 AI agents',
+      'All 11 tracked standards',
+      'All 8 compliance engines',
       'Blockchain audit trail (Hedera HCS)',
       'Priority support',
       'API access',
@@ -62,7 +62,7 @@ const TIERS = [
     popular: false,
     features: [
       'Unlimited seats',
-      '37 AI agents',
+      '8 compliance engines',
       'Crypto agility engine',
       'Dedicated CSM + SLA',
       'SSO / SAML',

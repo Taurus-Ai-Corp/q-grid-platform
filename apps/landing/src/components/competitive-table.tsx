@@ -32,8 +32,8 @@ const ROWS: Array<{ label: string; qgrid: React.ReactNode; ibm: React.ReactNode;
     entrust: CROSS,
   },
   {
-    label: 'Compliance Automation',
-    qgrid: CHECK,
+    label: 'Assessment Automation',
+    qgrid: PARTIAL,
     ibm: PARTIAL,
     fortanix: PARTIAL,
     thales: CROSS,
@@ -41,14 +41,14 @@ const ROWS: Array<{ label: string; qgrid: React.ReactNode; ibm: React.ReactNode;
   },
   {
     label: 'Blockchain Audit Trail',
-    qgrid: CHECK,
+    qgrid: PARTIAL,
     ibm: CROSS,
     fortanix: CROSS,
     thales: CROSS,
     entrust: CROSS,
   },
   {
-    label: 'AI Agent Discovery',
+    label: 'PQC Certificate Scanning',
     qgrid: CHECK,
     ibm: CROSS,
     fortanix: CROSS,
@@ -73,7 +73,7 @@ const ROWS: Array<{ label: string; qgrid: React.ReactNode; ibm: React.ReactNode;
   },
   {
     label: 'Deployment Time',
-    qgrid: <span className="font-semibold text-[var(--accent)]">45 min</span>,
+    qgrid: <span className="font-semibold text-[var(--accent)]">Same day</span>,
     ibm: <span>6–18 mo</span>,
     fortanix: <span>3–6 mo</span>,
     thales: <span>6–12 mo</span>,

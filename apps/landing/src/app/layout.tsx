@@ -11,11 +11,11 @@ export const metadata: Metadata = {
     default: 'GRIDERA — Post-Quantum Compliance Infrastructure by TAURUS AI Corp',
   },
   description:
-    'The first compliance-first post-quantum cryptography platform. Get quantum-safe in 45 minutes, not months. NIST FIPS 203/204, EU AI Act, SWIFT 2027.',
+    'The first compliance-first post-quantum cryptography platform. Get your PQC readiness score in minutes, not months. NIST FIPS 203/204, EU AI Act, SWIFT 2027.',
   openGraph: {
     title: 'GRIDERA — Post-Quantum Compliance Infrastructure by TAURUS AI Corp',
     description:
-      'Get quantum-safe in 45 minutes, not months. NIST FIPS 203/204, EU AI Act Aug 2026, SWIFT 2027.',
+      'Get your PQC readiness score in minutes, not months. NIST FIPS 203/204, EU AI Act Aug 2026, SWIFT 2027.',
     url: 'https://q-grid.net',
     siteName: 'GRIDERA',
     locale: 'en_US',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'GRIDERA — Post-Quantum Compliance by TAURUS AI Corp',
     description:
-      'Get quantum-safe in 45 minutes, not months. 37 AI Agents. NIST FIPS 203/204.',
+      'Get your PQC readiness score in minutes, not months. 8 Compliance Engines. NIST FIPS 203/204.',
   },
   metadataBase: new URL('https://q-grid.net'),
 }

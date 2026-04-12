@@ -14,7 +14,7 @@ const DIFF_CARDS = [
   {
     num: '03',
     title: 'Automated Discovery',
-    body: '37 AI agents continuously scan your codebase, APIs, and infrastructure for classical cryptographic exposure — work that would take a team of consultants weeks to complete manually.',
+    body: '8 compliance engines scan your TLS certificates and cryptographic inventory for classical exposure — work that would take a team of consultants weeks to complete manually.',
     competitor: 'vs. Manual assessment teams',
   },
   {

@@ -1,20 +1,17 @@
 const AGENTS = [
-  { name: 'PQC-Scanner',        status: 'Scanning', delay: '0s' },
-  { name: 'QRS-Scorer',         status: 'Active',   delay: '0.3s' },
-  { name: 'Risk-Classifier',    status: 'Active',   delay: '0.6s' },
-  { name: 'Assessment-Engine',  status: 'Active',   delay: '0.9s' },
-  { name: 'Report-Generator',   status: 'Ready',    delay: '1.2s' },
-  { name: 'Audit-Logger',       status: 'Logging',  delay: '1.5s' },
-  { name: 'Key-Manager',        status: 'Standby',  delay: '1.8s' },
-  { name: 'Compliance-Mapper',  status: 'Active',   delay: '2.1s' },
+  { name: 'PQC-Scanner',        status: 'Available', delay: '0s' },
+  { name: 'QRS-Scorer',         status: 'Available', delay: '0.3s' },
+  { name: 'Risk-Classifier',    status: 'Available', delay: '0.6s' },
+  { name: 'Assessment-Engine',  status: 'Available', delay: '0.9s' },
+  { name: 'Report-Generator',   status: 'Ready',     delay: '1.2s' },
+  { name: 'Audit-Logger',       status: 'Available', delay: '1.5s' },
+  { name: 'Key-Manager',        status: 'Ready',     delay: '1.8s' },
+  { name: 'Compliance-Mapper',  status: 'Available', delay: '2.1s' },
 ]
 
 const STATUS_COLORS: Record<string, string> = {
-  Scanning: 'text-[var(--accent)]',
-  Active:   'text-[var(--accent)]',
-  Logging:  'text-[var(--accent)]',
-  Ready:    'text-[#D4A017]',
-  Standby:  'text-[var(--graphite-med)]',
+  Available: 'text-[var(--accent)]',
+  Ready:     'text-[#D4A017]',
 }
 
 export default function AgentsSection() {
@@ -31,7 +28,7 @@ export default function AgentsSection() {
               Autonomous Compliance Agents
             </p>
             <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--graphite-med)] mt-0.5">
-              8 Active Engines
+              8 Compliance Engines
             </p>
           </div>
         </div>
@@ -107,7 +104,7 @@ export default function AgentsSection() {
             <p
               className="font-mono text-[14px] font-medium text-[var(--accent)] border-l-2 border-[var(--accent)] pl-4 mt-2"
             >
-              Average time from onboarding to first compliance report: 45 minutes.
+              PQC certificate scan completes in under a minute. Full assessment in a single session.
             </p>
 
             <a

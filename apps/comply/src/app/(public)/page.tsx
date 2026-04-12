@@ -73,10 +73,10 @@ const FEATURES = [
 ]
 
 const STATS = [
-  { value: '45 min', label: 'To First Assessment', icon: Clock },
-  { value: '37', label: 'AI Agents', icon: Users },
-  { value: '14', label: 'Compliance Frameworks', icon: Layers },
-  { value: '80%', label: 'GRC Overhead Reduction', icon: TrendingDown },
+  { value: '< 1 min', label: 'To First PQC Scan', icon: Clock },
+  { value: '8', label: 'Compliance Engines', icon: Users },
+  { value: '11', label: 'Standards Tracked', icon: Layers },
+  { value: '5', label: 'EU Regulations Covered', icon: TrendingDown },
 ]
 
 export default function EULandingPage() {

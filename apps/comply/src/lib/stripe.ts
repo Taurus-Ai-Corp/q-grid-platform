@@ -26,7 +26,7 @@ export const PLANS = {
     name: 'Enterprise',
     priceMonthly: null, // custom
     currency: 'eur',
-    features: ['Unlimited', '37 agents', 'Sovereign AI', 'Dedicated CSM', 'SSO/SAML'],
+    features: ['Unlimited', '8 engines', 'Sovereign AI', 'Dedicated CSM', 'SSO/SAML'],
   },
 } as const
 
