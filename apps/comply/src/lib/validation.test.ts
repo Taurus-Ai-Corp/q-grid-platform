@@ -4,7 +4,7 @@ import {
   createAssessmentSchema,
   updateAssessmentSchema,
   createReportSchema,
-} from '../validation'
+} from './validation'
 
 describe('createSystemSchema', () => {
   it('accepts a valid minimal system (name only)', () => {

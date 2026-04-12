@@ -69,7 +69,6 @@ describe('runSwarmAssessment', () => {
     vi.clearAllMocks()
   })
 
-  // Test 1: spawns one agent per section → totalAgents === 6, successRate === 1
   it('spawns exactly one agent per EU AI Act section (6 agents, 100% success)', async () => {
     const result = await runSwarmAssessment({
       assessmentId: 'test-001',
@@ -82,7 +81,6 @@ describe('runSwarmAssessment', () => {
     expect(result.successRate).toBe(1)
   })
 
-  // Test 2: sectionResults have the correct shape
   it('sectionResults contain correct fields (agentId, sectionId, score)', async () => {
     const result = await runSwarmAssessment({
       assessmentId: 'test-002',
@@ -111,7 +109,6 @@ describe('runSwarmAssessment', () => {
     }
   })
 
-  // Test 3: overallScore matches scoreAssessment output, riskLevel is a valid value
   it('overallScore is between 0-100 and riskLevel matches expected pattern', async () => {
     const result = await runSwarmAssessment({
       assessmentId: 'test-003',

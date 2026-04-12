@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { generateTemplateReport } from '../report-generator'
-import type { ReportInput } from '../report-generator'
-import type { SystemRecord } from '../systems-store'
-import type { AssessmentRecord } from '../assessment-store'
-import type { ScoringResult } from '../assessment-scorer'
+import { generateTemplateReport } from './report-generator'
+import type { ReportInput } from './report-generator'
+import type { SystemRecord } from './systems-store'
+import type { AssessmentRecord } from './assessment-store'
+import type { ScoringResult } from './assessment-scorer'
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 

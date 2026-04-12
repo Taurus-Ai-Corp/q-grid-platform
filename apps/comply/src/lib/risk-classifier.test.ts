@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { classifyRisk } from '../risk-classifier'
+import { classifyRisk } from './risk-classifier'
 
 describe('classifyRisk — EU AI Act Annex III + Article 5', () => {
   // Unacceptable risk — Article 5 prohibited practices

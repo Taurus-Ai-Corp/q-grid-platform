@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { aiGuard } from '../ai-guard'
-import { checkInputRules, checkOutputRules } from '../ai-guard-rules'
-import { calculateCost, MODEL_RATES } from '../observe-queries'
+import { aiGuard } from './ai-guard'
+import { checkInputRules, checkOutputRules } from './ai-guard-rules'
+import { calculateCost, MODEL_RATES } from './observe-queries'
 
 describe('guard → observe integration', () => {
   // Full guard flow: clean input → LLM → clean output → attestation

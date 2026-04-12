@@ -12,7 +12,6 @@ import { describe, it, expect } from 'vitest'
 import { generateRecommendations } from './recommendation-engine'
 
 describe('generateRecommendations — EU AI Act recommendation engine', () => {
-  // Test 1: Critical recommendation for autonomous decisions without override (Article 14)
   it('returns critical recommendation when autonomous_decisions=true and override_capability=false', () => {
     const responses: Record<string, string | boolean> = {
       autonomous_decisions: true,
@@ -40,7 +39,6 @@ describe('generateRecommendations — EU AI Act recommendation engine', () => {
     expect(overrideRec?.description).toContain('Article 14')
   })
 
-  // Test 2: High recommendation when gdpr_compliant=false and data-governance score < 50
   it('returns high recommendation when gdpr_compliant=false and data-governance score < 50', () => {
     const responses: Record<string, string | boolean> = {
       gdpr_compliant: false,
@@ -68,7 +66,6 @@ describe('generateRecommendations — EU AI Act recommendation engine', () => {
     expect(mediumRec).toBeDefined()
   })
 
-  // Test 3: No critical recommendations for a fully compliant system
   it('returns no critical recommendations for a fully compliant system', () => {
     const responses: Record<string, string | boolean> = {
       // Risk booleans set to safe values (false = non-autonomous, no rights impact)
@@ -96,7 +93,6 @@ describe('generateRecommendations — EU AI Act recommendation engine', () => {
     expect(criticalRecs).toHaveLength(0)
   })
 
-  // Test 4: Recommendations sorted by priority (critical → high → medium → low)
   it('recommendations are sorted critical → high → medium → low', () => {
     const responses: Record<string, string | boolean> = {
       // Trigger critical (autonomous without override)
