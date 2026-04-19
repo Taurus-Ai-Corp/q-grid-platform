@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Nav from '@/components/nav'
-import Footer from '@/components/footer'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -24,11 +22,8 @@ const TOC = [
 
 export default function PrivacyPage() {
   return (
-    <div className="bg-[var(--bone)] text-[var(--graphite)] min-h-screen">
-      <Nav />
-
-      <main className="max-w-[800px] mx-auto px-6 pt-32 pb-24">
-        {/* Header */}
+    <div className="max-w-[800px] mx-auto px-6 pt-16 pb-24">
+      {/* Header */}
         <div className="mb-12">
           <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--accent)] mb-4">
             Legal
@@ -540,9 +535,6 @@ export default function PrivacyPage() {
             Terms of Service →
           </Link>
         </div>
-      </main>
-
-      <Footer />
     </div>
   )
 }
