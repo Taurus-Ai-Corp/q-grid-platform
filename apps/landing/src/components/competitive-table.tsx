@@ -82,7 +82,7 @@ const ROWS: Array<{ label: string; qgrid: React.ReactNode; ibm: React.ReactNode;
 ]
 
 const HEADERS = [
-  { key: 'qgrid', label: 'Q-GRID Comply', highlight: true },
+  { key: 'qgrid', label: 'GRIDERA|Comply', highlight: true },
   { key: 'ibm', label: 'IBM Quantum Safe', highlight: false },
   { key: 'fortanix', label: 'Fortanix', highlight: false },
   { key: 'thales', label: 'Thales HSM', highlight: false },
@@ -101,7 +101,7 @@ export default function CompetitiveTable() {
               Competitive Comparison
             </h2>
             <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--graphite-med)] mt-1">
-              Q-Grid Comply vs. legacy cryptography vendors
+              GRIDERA|Comply vs. legacy cryptography vendors
             </p>
           </div>
         </div>
