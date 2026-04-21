@@ -49,7 +49,7 @@ export default function Differentiators() {
           <span className="font-mono text-[14px] text-[var(--accent)] tracking-[0.02em]">03</span>
           <div>
             <h2 className="font-[var(--font-heading)] text-[28px] font-semibold leading-[1.2] text-[var(--graphite)]">
-              Why Q-Grid Wins
+              Why GRIDERA|Comply Wins
             </h2>
             <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--graphite-med)] mt-1">
               Six reasons compliance teams choose us over legacy vendors

@@ -98,7 +98,7 @@ export default function CtaSection() {
               rel="noopener noreferrer"
               className="font-mono text-[12px] font-medium tracking-[0.1em] uppercase text-[var(--graphite-med)] hover:text-[var(--accent)] transition-colors"
             >
-              GO TO Q-GRID / COMPLY →
+              GO TO GRIDERA|COMPLY →
             </a>
           </div>
         </div>

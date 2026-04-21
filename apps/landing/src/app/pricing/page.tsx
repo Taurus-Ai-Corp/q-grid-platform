@@ -116,7 +116,7 @@ const FAQS = [
   },
   {
     q: 'How does the blockchain audit trail work?',
-    a: 'Every assessment is cryptographically signed using ML-DSA-65 (NIST FIPS 204) and anchored to the Hedera Consensus Service (HCS). This creates an immutable, timestamped record that regulators can independently verify — without trusting Q-Grid.',
+    a: 'Every assessment is cryptographically signed using ML-DSA-65 (NIST FIPS 204) and anchored to the Hedera Consensus Service (HCS). This creates an immutable, timestamped record that regulators can independently verify — without trusting GRIDERA|Comply.',
   },
   {
     q: 'Can I switch plans?',
