@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     '@taurus/pqc-engine',
     '@taurus/pqc-crypto',
     '@taurus/jurisdiction',
+    '@taurus/legal-notices',
   ],
   turbopack: {
     // Explicitly set the monorepo root so Next.js 16 Turbopack does not

@@ -17,6 +17,7 @@
     "@taurus/db": "workspace:*",
     "@taurus/hedera": "workspace:*",
     "@taurus/jurisdiction": "workspace:*",
+    "@taurus/legal-notices": "workspace:*",
     "@taurus/pqc-crypto": "workspace:*",
     "@taurus/pqc-engine": "workspace:*",
     "@taurus/ui": "workspace:*",

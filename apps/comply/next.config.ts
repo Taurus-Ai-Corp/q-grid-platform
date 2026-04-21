@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     '@taurus/jurisdiction',
     '@taurus/db',
     '@taurus/hedera',
+    '@taurus/legal-notices',
     '@clerk/nextjs',
   ],
   turbopack: {
