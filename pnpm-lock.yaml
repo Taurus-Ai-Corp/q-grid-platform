@@ -23,6 +23,12 @@ importers:
       '@clerk/nextjs':
         specifier: ^7.0.7
         version: 7.0.7(next@16.2.1(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@noble/hashes':
+        specifier: ^1.7.0
+        version: 1.8.0
+      '@noble/post-quantum':
+        specifier: ^0.2.1
+        version: 0.2.1
       '@taurus-ai/swarm-spawner':
         specifier: ^0.4.0
         version: 0.4.0(bn.js@5.2.3)(react-native@0.84.1(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))
