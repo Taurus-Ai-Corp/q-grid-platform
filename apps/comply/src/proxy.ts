@@ -5,9 +5,11 @@ const isPublicRoute = createRouteMatcher([
   '/',
   '/pricing',
   '/contact',
+  '/verify',
   '/sign-in(.*)',
   '/sign-up(.*)',
   '/api/webhooks(.*)',
+  '/api/public-key',
 ])
 
 const isOnboardingRoute = createRouteMatcher(['/onboarding(.*)'])
