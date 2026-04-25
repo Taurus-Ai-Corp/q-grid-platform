@@ -17,7 +17,8 @@
     "@taurus/ui": "workspace:*",
     "@taurus/pqc-engine": "workspace:*",
     "@taurus/pqc-crypto": "workspace:*",
-    "@taurus/jurisdiction": "workspace:*"
+    "@taurus/jurisdiction": "workspace:*",
+    "@taurus/legal-notices": "workspace:*"
   },
   "devDependencies": {
     "@taurus/tsconfig": "workspace:*",

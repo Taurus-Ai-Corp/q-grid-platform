@@ -35,6 +35,9 @@ importers:
       '@taurus/jurisdiction':
         specifier: workspace:*
         version: link:../../packages/jurisdiction
+      '@taurus/legal-notices':
+        specifier: workspace:*
+        version: link:../../packages/legal-notices
       '@taurus/pqc-crypto':
         specifier: workspace:*
         version: link:../../packages/pqc-crypto
@@ -93,6 +96,9 @@ importers:
       '@taurus/jurisdiction':
         specifier: workspace:*
         version: link:../../packages/jurisdiction
+      '@taurus/legal-notices':
+        specifier: workspace:*
+        version: link:../../packages/legal-notices
       '@taurus/pqc-crypto':
         specifier: workspace:*
         version: link:../../packages/pqc-crypto
@@ -175,24 +181,24 @@ importers:
         specifier: ^3.0.0
         version: 3.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
-  packages/pqc-ca:
+  packages/legal-notices:
     dependencies:
-      '@taurus/pqc-crypto':
-        specifier: workspace:*
-        version: link:../pqc-crypto
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
     devDependencies:
       '@taurus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/node':
-        specifier: ^25.5.0
-        version: 25.5.0
+      '@types/react':
+        specifier: ^19
+        version: 19.2.14
+      next:
+        specifier: ^16.2.1
+        version: 16.2.1(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       typescript:
         specifier: ^5.8.0
         version: 5.9.3
-      vitest:
-        specifier: ^3.0.0
-        version: 3.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/pqc-crypto:
     dependencies:
