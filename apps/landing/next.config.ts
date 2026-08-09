@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
 import path from 'path'
+import { buildSecurityHeaderPairs } from './security-headers'
 
 // Build identifier to force cache invalidation on Vercel CDN
 const BUILD_ID = 'gridera-jwt-auth-v2-' + Date.now()
@@ -50,18 +51,28 @@ const nextConfig: NextConfig = {
     ]
   },
   async headers() {
+    const securityHeaders = buildSecurityHeaderPairs()
     return [
       {
-        source: '/(.*)',
+        source: '/pdfs/:path*',
         headers: [
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'X-DNS-Prefetch-Control', value: 'on' },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
+          ...securityHeaders,
+          { key: 'Content-Disposition', value: 'inline' },
+          { key: 'Cache-Control', value: 'public, max-age=3600' },
+        ],
+      },
+      {
+        source: '/videos/:path*',
+        headers: [
+          ...securityHeaders,
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
+      // Exclude media paths so no-store does not override pdf/video cache
+      {
+        source: '/:path((?!pdfs/|videos/).*)',
+        headers: [
+          ...securityHeaders,
           { key: 'Cache-Control', value: 'no-store' },
         ],
       },
