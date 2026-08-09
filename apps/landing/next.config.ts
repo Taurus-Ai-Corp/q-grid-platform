@@ -68,9 +68,17 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=86400' },
         ],
       },
-      // Exclude media paths so no-store does not override pdf/video cache
+      // Badge SVGs set their own Cache-Control in the route handler. They MUST stay
+      // cacheable: a README badge is fetched on every page view, and no-store would mean
+      // a fresh TLS handshake against the scanned domain each time — slow for the viewer
+      // and abusive to the target. Security headers still apply.
       {
-        source: '/:path((?!pdfs/|videos/).*)',
+        source: '/api/badge/:path*',
+        headers: securityHeaders,
+      },
+      // Exclude media + badge paths so no-store does not override their cache policy
+      {
+        source: '/:path((?!pdfs/|videos/|api/badge/).*)',
         headers: [
           ...securityHeaders,
           { key: 'Cache-Control', value: 'no-store' },

@@ -1,0 +1,94 @@
+import { promises as dns } from 'dns'
+import {
+  isPublicAddress,
+  normalizeDomain,
+  renderBadge,
+  stateForRisk,
+  type BadgeState,
+} from '@/lib/badge'
+
+// tls.connect() via @taurus/pqc-engine — not edge-compatible.
+export const runtime = 'nodejs'
+
+/** A scan that hangs must not hold the request open; a slow badge is a deleted badge. */
+const SCAN_TIMEOUT_MS = 8_000
+
+/**
+ * Cache aggressively. GitHub proxies README images through camo, which re-fetches on its
+ * own schedule, and a TLS handshake per view would be both slow and abusive to the target
+ * being scanned. `stale-while-revalidate` keeps a badge rendering while it refreshes.
+ */
+const CACHE_OK = 'public, max-age=3600, s-maxage=21600, stale-while-revalidate=86400'
+/** Failures get a short TTL so a transient outage doesn't pin "unknown" for six hours. */
+const CACHE_UNKNOWN = 'public, max-age=300, s-maxage=300'
+
+function svg(body: string, cache: string): Response {
+  return new Response(body, {
+    status: 200, // Always 200: a non-200 renders as a broken image in a README.
+    headers: {
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Cache-Control': cache,
+      // camo strips cookies anyway; be explicit that this is a public, credential-free asset.
+      'Access-Control-Allow-Origin': '*',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  })
+}
+
+function unknown(message: string): Response {
+  return svg(renderBadge({ message, state: 'unknown' }), CACHE_UNKNOWN)
+}
+
+/**
+ * GET /api/badge/{domain}.svg — live quantum-readiness badge for any public domain.
+ *
+ * Zero opt-in by design: the domain owner does not sign up, install, or commit anything.
+ * That is what makes this a distribution channel rather than a feature — the OpenSSF
+ * Scorecard badge appears in more READMEs than its Action has installs for exactly this
+ * reason.
+ */
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ domain: string }> },
+): Promise<Response> {
+  try {
+    const { domain: raw } = await params
+    const domain = normalizeDomain(decodeURIComponent(raw ?? ''))
+    if (!domain) return unknown('invalid domain')
+
+    // Shape is not enough — a public name can resolve to 127.0.0.1 or 169.254.169.254.
+    // Resolve first and refuse anything that is not a public unicast address, so the
+    // badge cannot be used to probe internal networks through our server.
+    let addrs: string[]
+    try {
+      const [v4, v6] = await Promise.all([
+        dns.resolve4(domain).catch(() => [] as string[]),
+        dns.resolve6(domain).catch(() => [] as string[]),
+      ])
+      addrs = [...v4, ...v6]
+    } catch {
+      return unknown('dns error')
+    }
+    if (addrs.length === 0) return unknown('no dns')
+    // ALL addresses must be public: a name resolving to both a public and a private IP is
+    // a classic DNS-rebinding shape, so treat any private answer as disqualifying.
+    if (!addrs.every(isPublicAddress)) return unknown('non-public host')
+
+    const { scanDomain, calculateQrsScore } = await import('@taurus/pqc-engine')
+
+    const scan = await Promise.race([
+      scanDomain(domain),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), SCAN_TIMEOUT_MS)),
+    ])
+    if (!scan || scan.error) return unknown('scan failed')
+
+    const qrs = calculateQrsScore(scan)
+    const state: BadgeState = stateForRisk(qrs.riskLevel)
+
+    return svg(renderBadge({ message: `QRS ${qrs.overall}`, state }), CACHE_OK)
+  } catch {
+    // Never surface a 500 — an error page where an image should be is worse than a
+    // grey "unknown", and gets the badge removed from the README.
+    return unknown('unavailable')
+  }
+}
