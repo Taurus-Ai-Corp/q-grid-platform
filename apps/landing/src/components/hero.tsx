@@ -2,18 +2,19 @@
 
 import { useEffect, useRef } from 'react'
 
-const FEATURE_PILLS = [
-  'ML-DSA FIPS 204',
-  'ML-KEM FIPS 203',
-  'EU AI ACT AUG 2026',
-  '8 COMPLIANCE ENGINES',
+const LADDER_PILLS = [
+  '01 SCAN — UNCOVER RISK',
+  '02 GUARD — CONTROL EXPOSURE',
+  '03 MIGRATE — TRANSFORM',
+  '04 COMPLY — ASSESS & REGULATE',
+  '05 CERTIFY — PROVE TRUST',
 ]
 
 const STATUS_ITEMS = [
-  { label: 'NIST FIPS 204 Compliant', color: 'bg-[var(--accent)]' },
-  { label: 'EU AI Act Ready', color: 'bg-[var(--accent)]' },
-  { label: 'Blockchain Audit Trail', color: 'bg-[var(--accent)]' },
-  { label: 'SOC 2 Pending', color: 'bg-[#D4A017]' },
+  { label: 'See exposure before attackers do', color: 'bg-[var(--accent)]' },
+  { label: 'Continuous cryptographic risk control', color: 'bg-[var(--accent)]' },
+  { label: 'Board-level attestation & proof', color: 'bg-[var(--accent)]' },
+  { label: 'SOC 2 Readiness In Progress', color: 'bg-[#D4A017]' },
 ]
 
 export default function Hero() {
@@ -76,7 +77,7 @@ export default function Hero() {
         {/* Badge */}
         <div className="reveal-hero inline-flex items-center gap-3 font-mono text-[11px] font-medium tracking-[0.12em] uppercase text-[var(--accent)] mb-6 px-4 py-[6px] border border-[var(--accent)]">
           <span className="block w-5 h-px bg-[var(--accent)]" aria-hidden="true" />
-          /// QUANTUM-SAFE COMPLIANCE INFRASTRUCTURE
+          /// CRYPTOGRAPHIC TRUST LADDER
         </div>
 
         {/* H1 */}
@@ -84,11 +85,9 @@ export default function Hero() {
           className="reveal-hero font-[var(--font-heading)] font-bold leading-[1.05] mb-4"
           style={{ fontSize: 'clamp(40px, 5vw, 64px)', maxWidth: '720px', transitionDelay: '120ms' }}
         >
-          Compliance-First
+          From cryptographic uncertainty
           <br />
-          <span className="gradient-text">Post-Quantum</span>
-          <br />
-          Cryptography
+          <span className="gradient-text">to measurable trust</span>
         </h1>
 
         {/* Sub-headline */}
@@ -96,7 +95,7 @@ export default function Hero() {
           className="reveal-hero text-[22px] font-normal text-[var(--graphite-med)] tracking-[-0.01em] mt-3"
           style={{ transitionDelay: '240ms' }}
         >
-          Get quantum-safe in minutes, not months.
+          See your exposure. Control your risk. Transform your crypto. Prove your readiness.
         </p>
 
         {/* Description */}
@@ -104,14 +103,14 @@ export default function Hero() {
           className="reveal-hero mt-6 max-w-[560px] text-[16px] leading-[1.7] text-[var(--graphite-med)]"
           style={{ transitionDelay: '360ms' }}
         >
-          Built on{' '}
+          Five steps from exposure to assurance. Built on{' '}
           <span className="font-mono text-[var(--accent)] text-[13px]">NIST FIPS 203/204</span>,
           aligned with the{' '}
           <span className="font-mono text-[var(--accent)] text-[13px]">EU AI Act (Aug 2026)</span>{' '}
           and{' '}
-          <span className="font-mono text-[var(--accent)] text-[13px]">SWIFT CSP 2027</span>{' '}
-          mandates. 8 compliance engines continuously discover, assess, and score your cryptographic
-          exposure — no consultants required.
+          <span className="font-mono text-[var(--accent)] text-[13px]">CNSA 2.0</span>{' '}
+          mandates. Every step produces machine-verifiable, PQC-signed evidence anchored to{' '}
+          <span className="font-mono text-[var(--accent)] text-[13px]">Hedera HCS</span>.
         </p>
 
         {/* Feature pills */}
@@ -119,7 +118,7 @@ export default function Hero() {
           className="reveal-hero flex flex-wrap items-center gap-2 mt-8"
           style={{ transitionDelay: '480ms' }}
         >
-          {FEATURE_PILLS.map((pill) => (
+          {LADDER_PILLS.map((pill) => (
             <span
               key={pill}
               className="font-mono text-[11px] font-medium tracking-[0.06em] uppercase px-3 py-[5px] border border-[var(--graphite-ghost)] text-[var(--graphite-med)]"

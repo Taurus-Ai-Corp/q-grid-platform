@@ -33,10 +33,10 @@ const STEPS = [
 ]
 
 const CAPABILITIES = [
-  { label: 'Autonomous Swarms', desc: 'Parallel agent teams work across repos simultaneously — a 50-service monolith migrates in days, not quarters.' },
-  { label: 'Cryptographic Inventory', desc: 'Full dependency-graph mapping of every primitive, key store, HSM reference, and TLS endpoint in your estate.' },
-  { label: 'Pull Request Pipeline', desc: 'Reviewed, tested, CI-passing PRs land in your existing GitHub / GitLab / Bitbucket workflow.' },
-  { label: 'Hybrid Rollout', desc: 'Classical + post-quantum dual-signing during transition. Zero-downtime deploy with rollback safety.' },
+  { label: 'ML-DSA-65 Signed Decisions', desc: 'Every migration decision and artifact is signed with ML-DSA-65 (NIST FIPS 204) via @taurus/pqc-crypto. Shipping today.' },
+  { label: 'Hedera HCS Audit Trail', desc: 'Each signed decision is anchored to the Hedera Consensus Service for an immutable, independently verifiable record. Shipping today.' },
+  { label: 'OpenFeature Agility Layer — designed', desc: 'Vendor-agnostic crypto algorithm feature flags across the five-state migration machine (LEGACY_ONLY → PQC_ONLY). Architecture complete; implementation is a funded R&D phase.' },
+  { label: 'Zero-Downtime TLS Bridge — designed', desc: 'Bridge-server pattern (ePrint 2025/1792) for hybrid classical + PQC TLS. Design specified; not yet implemented.' },
 ]
 
 const PRICING_TIERS = [
@@ -84,12 +84,12 @@ export default function MigratePage() {
         eyebrow="GRIDERA|Migrate"
         title={
           <>
-            Migrate Your Infrastructure to
+            Modernize Your Crypto with
             <br />
-            <span className="gradient-text">Post-Quantum Cryptography</span>
+            <span className="gradient-text">Confidence</span>
           </>
         }
-        description="Instead of months of manual consulting, GRIDERA.Migrate spawns autonomous AI developer swarms that analyze your codebase, refactor legacy crypto libraries, and generate reviewed pull requests. Every decision is quantum-signed on Hedera."
+        description="Turn post-quantum readiness into a managed transformation. Every migration decision is ML-DSA-65 signed and anchored to Hedera HCS — independently verifiable, no trust in us required. The crypto-agility layer (OpenFeature flags, zero-downtime TLS bridge) is architecture-complete and delivered as a funded engagement phase."
         cta={{ label: 'Request Consultation', href: '#inquire' }}
         secondary={{ label: 'See How It Works', href: '#process' }}
       />
