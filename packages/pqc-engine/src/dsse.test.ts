@@ -127,6 +127,19 @@ describe('signCbomDsse / verifyCbomDsse', () => {
     expect(verifyCbomDsse(env, publicKey)).toMatchObject({ ok: false, reason: 'bad-payload-type' })
   })
 
+  it('rejects malleable base64 that decodes to the same bytes', () => {
+    const { secretKey, publicKey } = keys()
+    const env = signCbomDsse(generateCBOM(scan(), { targetName: 'example.com' }), secretKey, publicKey)
+    // Node's decoder drops whitespace, so this decodes identically and the signature
+    // would still verify — but any consumer digesting the SERIALIZED envelope sees a
+    // different artifact for a valid signature.
+    const mutated = { ...env, payload: `${env.payload.slice(0, 8)}\n${env.payload.slice(8)}` }
+    expect(verifyCbomDsse(mutated, publicKey)).toMatchObject({
+      ok: false,
+      reason: 'malformed-base64',
+    })
+  })
+
   it('rejects an envelope with no signatures', () => {
     const { secretKey, publicKey } = keys()
     const env = signCbomDsse(generateCBOM(scan(), { targetName: 'example.com' }), secretKey, publicKey)

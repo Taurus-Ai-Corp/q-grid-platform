@@ -29,6 +29,19 @@ describe('normalizeDomain', () => {
     expect(normalizeDomain('EXAMPLE.COM')).toBe('example.com')
     expect(normalizeDomain('example.com:8443')).toBe('example.com')
     expect(normalizeDomain('example.com.svg')).toBe('example.com')
+    // Repeated suffix is a plausible typo; stripping one would leave a name that
+    // merely fails DNS, producing a confusing error instead of a badge.
+    expect(normalizeDomain('example.com.svg.svg')).toBe('example.com')
+  })
+
+  it('accepts punycode IDN TLDs', () => {
+    expect(normalizeDomain('example.xn--p1ai')).toBe('example.xn--p1ai')
+    expect(normalizeDomain('example.xn--fiqs8s')).toBe('example.xn--fiqs8s')
+  })
+
+  it('still rejects all-numeric TLDs so bare IPv4 cannot pass as a name', () => {
+    expect(normalizeDomain('1.2.3.4')).toBeNull()
+    expect(normalizeDomain('192.168.1.1')).toBeNull()
   })
 
   it('rejects hosts that are not public dotted DNS names', () => {
@@ -75,9 +88,17 @@ describe('isPublicAddress', () => {
     }
   })
 
-  it('judges IPv4-mapped IPv6 on the embedded v4 address', () => {
-    expect(isPublicAddress('::ffff:10.0.0.1')).toBe(false)
+  it('judges IPv6 formats that embed a v4 address on that address', () => {
+    expect(isPublicAddress('::ffff:10.0.0.1')).toBe(false) // v4-mapped, dotted
     expect(isPublicAddress('::ffff:8.8.8.8')).toBe(true)
+    expect(isPublicAddress('::10.0.0.1')).toBe(false) // v4-compatible, dotted
+    expect(isPublicAddress('::a00:1')).toBe(false) // v4-compatible in hex == 10.0.0.1
+    expect(isPublicAddress('::7f00:1')).toBe(false) // == 127.0.0.1
+  })
+
+  it('rejects transition prefixes that can tunnel to arbitrary v4 addresses', () => {
+    expect(isPublicAddress('2002:0a00:0001::1')).toBe(false) // 6to4
+    expect(isPublicAddress('64:ff9b::a00:1')).toBe(false) // NAT64
   })
 
   it('rejects addresses just outside the public boundary', () => {

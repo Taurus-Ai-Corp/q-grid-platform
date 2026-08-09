@@ -8,10 +8,32 @@ import ProductSection from '@/components/product-section'
 export default function CertifyPage() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setError(null)
+    setSending(true)
+    try {
+      const res = await fetch('/api/certify/inquire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const data = (await res.json().catch(() => null)) as { error?: string } | null
+      if (!res.ok) {
+        // Only confirm once the request is actually accepted. Showing "we'll respond
+        // within 24 hours" for a submission nobody received is worse than an error.
+        setError(data?.error ?? 'Could not send your request. Please email admin@taurusai.io.')
+        return
+      }
+      setSubmitted(true)
+    } catch {
+      setError('Network error. Please email admin@taurusai.io.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -129,6 +151,7 @@ export default function CertifyPage() {
               />
               <input
                 type="text"
+                required
                 value={form.company}
                 onChange={(e) => setForm({ ...form, company: e.target.value })}
                 placeholder="company"
@@ -141,11 +164,17 @@ export default function CertifyPage() {
                 rows={3}
                 className="w-full px-4 py-3 text-sm bg-[var(--bone-deep)] border border-[var(--graphite-ghost)] text-[var(--graphite)] focus:outline-none focus:border-[var(--accent)] placeholder:text-[var(--graphite-ghost)]"
               />
+              {error && (
+                <p role="alert" className="text-[13px] text-[#E5484D] leading-[1.6]">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
-                className="w-full h-12 bg-[var(--accent)] text-[#0B0E14] text-sm font-semibold hover:brightness-110"
+                disabled={sending}
+                className="w-full h-12 bg-[var(--accent)] text-[#0B0E14] text-sm font-semibold hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Request Briefing
+                {sending ? 'Sending…' : 'Request Briefing'}
               </button>
             </form>
           )}

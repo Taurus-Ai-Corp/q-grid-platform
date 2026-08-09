@@ -10,8 +10,19 @@ import {
 // tls.connect() via @taurus/pqc-engine — not edge-compatible.
 export const runtime = 'nodejs'
 
-/** A scan that hangs must not hold the request open; a slow badge is a deleted badge. */
-const SCAN_TIMEOUT_MS = 8_000
+/**
+ * Per-connection socket budget handed to the engine.
+ *
+ * This is NOT a race deadline. scanDomain opens a TLS socket and then awaits
+ * probeHybridKex, which opens a second one, so the engine's own worst case is roughly
+ * 2x this. An outer race shorter than that would make every slow-but-valid host resolve
+ * to "unknown" forever — and with a short failure TTL the badge would re-scan and
+ * re-fail on a loop, never recovering. So the engine gets a real budget and the outer
+ * guard sits above its worst case.
+ */
+const SOCKET_BUDGET_MS = 6_000
+/** Outer backstop, above the engine's ~2x worst case, so it only fires on a true hang. */
+const HARD_DEADLINE_MS = SOCKET_BUDGET_MS * 2 + 3_000
 
 /**
  * Cache aggressively. GitHub proxies README images through camo, which re-fetches on its
@@ -74,13 +85,29 @@ export async function GET(
     // a classic DNS-rebinding shape, so treat any private answer as disqualifying.
     if (!addrs.every(isPublicAddress)) return unknown('non-public host')
 
+    // Pin the connection to the address we just validated. Passing the hostname instead
+    // would let the engine re-resolve, so the address that was checked and the address
+    // that gets connected to could differ — the TOCTOU window a TTL-0 rebinding record
+    // is built to exploit. servername stays the hostname, so SNI is unaffected.
+    const address = addrs[0] as string
+
     const { scanDomain, calculateQrsScore } = await import('@taurus/pqc-engine')
 
+    let deadline: ReturnType<typeof setTimeout> | undefined
     const scan = await Promise.race([
-      scanDomain(domain),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), SCAN_TIMEOUT_MS)),
-    ])
+      scanDomain(domain, { address, timeoutMs: SOCKET_BUDGET_MS }),
+      new Promise<null>((resolve) => {
+        deadline = setTimeout(() => resolve(null), HARD_DEADLINE_MS)
+      }),
+    ]).finally(() => clearTimeout(deadline))
+
     if (!scan || scan.error) return unknown('scan failed')
+    // A scan can succeed with nothing to report: scanner.ts only pushes algorithms when
+    // the peer certificate is non-empty. calculateQrsScore then returns overall 0 /
+    // riskLevel 'critical', which would publish a RED badge asserting critical failure
+    // about a third party's domain — cached for hours, on a product that sells verifiable
+    // truth. No evidence must render as "unknown", never as a verdict.
+    if (scan.algorithms.length === 0) return unknown('no data')
 
     const qrs = calculateQrsScore(scan)
     const state: BadgeState = stateForRisk(qrs.riskLevel)

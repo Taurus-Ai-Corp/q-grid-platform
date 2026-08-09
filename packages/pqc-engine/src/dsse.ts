@@ -58,6 +58,20 @@ export interface AkpPublicJwk {
 
 const b64 = (b: Uint8Array): string => Buffer.from(b).toString('base64')
 const unb64 = (s: string): Uint8Array => new Uint8Array(Buffer.from(s, 'base64'))
+
+/**
+ * Strict base64 decode.
+ *
+ * Node's decoder silently drops whitespace and invalid characters and tolerates wrong
+ * padding, so an attacker can rewrite `payload`/`sig` — inserting newlines, changing
+ * padding — and the signature still verifies because the decoded bytes are unchanged.
+ * Any consumer that digests or compares the *serialized* envelope then sees a different
+ * artifact for a signature that verifies. Requiring a byte-exact round-trip closes that.
+ */
+function strictUnb64(s: string): Uint8Array | null {
+  const bytes = unb64(s)
+  return b64(bytes) === s ? bytes : null
+}
 const b64url = (b: Uint8Array): string => Buffer.from(b).toString('base64url')
 const unb64url = (s: string): Uint8Array => new Uint8Array(Buffer.from(s, 'base64url'))
 
@@ -124,7 +138,12 @@ export function signCbomDsse(
 export interface DsseVerifyResult {
   ok: boolean
   /** Which check failed first — for actionable CI output rather than a bare false. */
-  reason?: 'bad-payload-type' | 'no-signatures' | 'keyid-mismatch' | 'bad-signature'
+  reason?:
+    | 'bad-payload-type'
+    | 'no-signatures'
+    | 'keyid-mismatch'
+    | 'bad-signature'
+    | 'malformed-base64'
   /** SERIALIZED_BODY, returned only when the signature verified. */
   payload?: Uint8Array
 }
@@ -147,8 +166,11 @@ export function verifyCbomDsse(
   const match = envelope.signatures.find((s) => s.keyid === expected)
   if (!match) return { ok: false, reason: 'keyid-mismatch' }
 
-  const body = unb64(envelope.payload)
-  const ok = verify(pae(envelope.payloadType, body), unb64(match.sig), publicKey)
+  const body = strictUnb64(envelope.payload)
+  const sig = strictUnb64(match.sig)
+  if (!body || !sig) return { ok: false, reason: 'malformed-base64' }
+
+  const ok = verify(pae(envelope.payloadType, body), sig, publicKey)
   return ok ? { ok: true, payload: body } : { ok: false, reason: 'bad-signature' }
 }
 

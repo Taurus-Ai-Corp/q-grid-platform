@@ -19,6 +19,14 @@
 
 set -u
 
+# Every path this script handles — git ls-files output, git diff --cached paths,
+# EXCLUDE_RE, APP_SRC_RE — is repo-root-relative. Run from a subdirectory and those
+# paths resolve against the wrong base, so greps silently match nothing and the guard
+# passes vacuously. Anchor to the repo root once, here, rather than per-call.
+if _root=$(git rev-parse --show-toplevel 2>/dev/null); then
+  cd "$_root" || exit 2
+fi
+
 # Deprecated "Q-Grid X" forms (incl. Platform — the platform is GRIDERA, never "Q-Grid Platform").
 QGRID_VERBS='Comply|Scan|Scanner|Migrate|Certify|Lend|Pay|Arq|Shield|Guard|Observe|Platform'
 # Space-form product names that MUST use the pipe (GRIDERA|Comply). NOTE: "Platform" is NOT
@@ -56,18 +64,44 @@ if [ -f "$_TAXONOMY_RULES" ]; then
   . "$_TAXONOMY_RULES"
 fi
 
-# Re-append repo-local rules AFTER the taxonomy override, which reassigns
-# FORBIDDEN wholesale. Anything added before the source block is silently lost.
+# Re-append repo-local rules AFTER the taxonomy override, which reassigns FORBIDDEN
+# wholesale — anything set before that source block is silently discarded.
+#
+# Applied as ONE unit rather than per-rule `case` patches. Patching individually meant
+# only the rules someone remembered to mirror survived; adding a rule above the source
+# block and forgetting to mirror it made it vanish with no error. New repo-local rules
+# go in REPO_LOCAL_EXTRA and are covered automatically.
+#
+# "GRIDERA Asset" is here because the generator only knows canonical sub-products and
+# AssetGrid is a DEMOTED CONCEPT, so it will never appear in the generated verb list.
+REPO_LOCAL_EXTRA="${HYPHEN_BRAND}|(GRIDERA Asset)"
 case "$FORBIDDEN" in
   *"GRID-ERA"*) : ;;
-  *) FORBIDDEN="${FORBIDDEN}|${HYPHEN_BRAND}" ;;
+  *) FORBIDDEN="${FORBIDDEN}|${REPO_LOCAL_EXTRA}" ;;
 esac
-# "GRIDERA Asset" — the generator only knows canonical sub-products, and AssetGrid is a
-# DEMOTED CONCEPT, so "Asset" will never appear in the generated verb list. Append locally.
-case "$FORBIDDEN" in
-  *"GRIDERA Asset"*) : ;;
-  *) FORBIDDEN="${FORBIDDEN}|(GRIDERA Asset)" ;;
-esac
+
+# Make local-vs-CI divergence visible instead of silent: the sourced file is untracked
+# machine-local state, so the same commit can pass on one machine and fail on another.
+if [ -n "${BRAND_GUARD_VERBOSE:-}" ]; then
+  if [ -f "$_TAXONOMY_RULES" ]; then
+    echo "  brand guard: taxonomy rules sourced from $_TAXONOMY_RULES"
+  else
+    echo "  brand guard: taxonomy rules ABSENT — repo-local fallback only"
+  fi
+fi
+
+# --- Dead-domain rule (added 2026-08-09) ------------------------------------
+# grid-era.com was registered 2026-08-08 but has NO A RECORD and serves nothing
+# (verified against 8.8.8.8 and 1.1.1.1). Docs may discuss it; shipping app source
+# must never point a CTA or canonical at it.
+#
+# Path-scoped rather than global, and evaluated inside BOTH scan loops below so it
+# honours the staged-only contract in the header. An earlier version ran a bare
+# `grep -r ... apps/*/src` outside the loops, which (a) failed every developer's
+# every commit on one pre-existing hit and (b) silently matched nothing when invoked
+# from a subdirectory, since the glob is CWD-relative.
+DEAD_DOMAIN='grid-era\.com'
+APP_SRC_RE='^apps/[^/]+/src/'
 
 # Paths that legitimately contain the forbidden strings as negative examples,
 # plus historical plans/specs (docs/superpowers/) that record the old names.
@@ -91,6 +125,16 @@ if [ "${1:-}" = "--all" ]; then
       echo "$text" | grep -q "brand-allow" && continue
       report "$f" "$ln" "$(echo "$text" | sed 's/^[[:space:]]*//' | cut -c1-80)"
     done < <(grep -nEI "$FORBIDDEN" "$f" 2>/dev/null)
+
+    # Dead-domain rule, restricted to app source. Paths come from git ls-files, so
+    # they are repo-root-relative and this works from any working directory.
+    if echo "$f" | grep -qE "$APP_SRC_RE"; then
+      while IFS=: read -r ln text; do
+        [ -z "$ln" ] && continue
+        echo "$text" | grep -q "brand-allow" && continue
+        report "$f" "$ln" "grid-era.com in app source — domain has no A record"
+      done < <(grep -nEI "$DEAD_DOMAIN" "$f" 2>/dev/null)
+    fi
   done < <(git ls-files)
 else
   # Staged-additions scan (pre-commit). Parse unified diff, track file + new-line numbers.
@@ -110,6 +154,8 @@ else
         elif echo "$text" | grep -q "brand-allow"; then :;
         elif echo "$text" | grep -qE "$FORBIDDEN"; then
           report "$current_file" "$newln" "$(echo "$text" | sed 's/^[[:space:]]*//' | cut -c1-80)"
+        elif echo "$current_file" | grep -qE "$APP_SRC_RE" && echo "$text" | grep -qE "$DEAD_DOMAIN"; then
+          report "$current_file" "$newln" "grid-era.com in app source — domain has no A record"
         fi
         newln=$((newln+1))
         ;;
@@ -118,19 +164,6 @@ else
     esac
   done < <(git diff --cached --unified=0)
 fi
-
-# --- Dead-domain guard (added 2026-08-09) -----------------------------------
-# grid-era.com was registered 2026-08-08 but has NO A RECORD and serves nothing
-# (verified against 8.8.8.8 and 1.1.1.1). eu.grid-era.com does not resolve either.
-# Docs may discuss it; shipping app source must never point a CTA/canonical at it.
-# Scoped to app source so the taxonomy notes and this comment don't self-trip.
-while IFS= read -r hit; do
-  [ -z "$hit" ] && continue
-  echo "$hit" | grep -q "brand-allow" && continue
-  f="${hit%%:*}"; rest="${hit#*:}"; ln="${rest%%:*}"
-  report "$f" "$ln" "grid-era.com in app source — domain has no A record"
-done < <(grep -rnI --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.vercel \
-           --exclude-dir=dist -e 'grid-era\.com' apps/*/src 2>/dev/null)
 
 if [ "$fail" -ne 0 ]; then
   echo ""

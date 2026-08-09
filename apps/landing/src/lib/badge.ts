@@ -130,11 +130,21 @@ export function normalizeDomain(input: string): string | null {
     .replace(/^https?:\/\//, '')
     .replace(/\/.*$/, '')
     .replace(/:\d+$/, '')
-    .replace(/\.svg$/, '')
+    // Strip repeated .svg — "example.com.svg.svg" is a plausible typo, and stripping
+    // only one leaves "example.com.svg", a valid-shaped name that just fails DNS.
+    .replace(/(\.svg)+$/, '')
 
   if (!d || d.length < 4 || d.length > 253) return null
   // Must be a dotted DNS name. Rejects bare IPv4, "localhost", and IPv6 literals.
-  if (!/^(?=.{4,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(d)) return null
+  // The TLD allows digits/hyphens so punycode IDN TLDs (xn--p1ai, xn--fiqs8s) work,
+  // but must not be all-numeric — that is what keeps "1.2.3.4" from passing as a name.
+  if (
+    !/^(?=.{4,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{1,62}$/.test(d)
+  ) {
+    return null
+  }
+  const tld = d.slice(d.lastIndexOf('.') + 1)
+  if (/^\d+$/.test(tld)) return null
   // Reserved / internal-use suffixes (RFC 6761, RFC 8375) never resolve publicly.
   if (/\.(local|internal|localhost|localdomain|home\.arpa|test|invalid|example)$/.test(d)) {
     return null
@@ -149,9 +159,20 @@ export function isPublicAddress(addr: string): boolean {
     if (v6 === '::1' || v6 === '::') return false
     if (/^f[cd][0-9a-f]{2}:/.test(v6)) return false // fc00::/7 unique-local
     if (/^fe[89ab][0-9a-f]:/.test(v6)) return false // fe80::/10 link-local
-    // IPv4-mapped (::ffff:10.0.0.1) must be judged on the embedded v4 address.
-    const mapped = v6.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/)
-    if (mapped?.[1]) return isPublicAddress(mapped[1])
+    // Transition/embedding formats all smuggle a v4 address through a v6 literal, so
+    // each must be judged on the address it actually reaches.
+    // ::ffff:a.b.c.d (v4-mapped) and ::a.b.c.d (v4-compatible, incl. hex ::a00:1)
+    const embedded = v6.match(/^::(?:ffff:)?(\d+\.\d+\.\d+\.\d+)$/)
+    if (embedded?.[1]) return isPublicAddress(embedded[1])
+    if (/^::(?:ffff:)?[0-9a-f]{1,4}:[0-9a-f]{1,4}$/.test(v6)) {
+      // v4-compatible written in hex, e.g. ::a00:1 == 10.0.0.1
+      const hex = v6.replace(/^::(?:ffff:)?/, '').split(':')
+      const hi = parseInt(hex[0] ?? '0', 16)
+      const lo = parseInt(hex[1] ?? '0', 16)
+      return isPublicAddress(`${hi >> 8}.${hi & 255}.${lo >> 8}.${lo & 255}`)
+    }
+    if (/^2002:/.test(v6)) return false // 6to4 — embeds an arbitrary v4 address
+    if (/^64:ff9b:/.test(v6)) return false // NAT64 well-known prefix
     return true
   }
 

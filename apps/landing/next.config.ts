@@ -52,11 +52,13 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     const securityHeaders = buildSecurityHeaderPairs()
+    // Only the PDF route gets same-origin framing; everything else stays DENY.
+    const pdfHeaders = buildSecurityHeaderPairs({ frameOptions: 'SAMEORIGIN' })
     return [
       {
         source: '/pdfs/:path*',
         headers: [
-          ...securityHeaders,
+          ...pdfHeaders,
           { key: 'Content-Disposition', value: 'inline' },
           { key: 'Cache-Control', value: 'public, max-age=3600' },
         ],

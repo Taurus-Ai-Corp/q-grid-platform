@@ -103,7 +103,17 @@ function isHandshakeFailure(err: NodeJS.ErrnoException): boolean {
 // Forcing minVersion=maxVersion=TLSv1.3 is what makes this discriminating:
 // a non-supporting server cannot silently fall back to TLS 1.2 (where the
 // group is irrelevant), so it fails the handshake instead.
-export function probeHybridKex(domain: string, timeoutMs = 8000): Promise<KeyExchangeInfo> {
+/**
+ * @param address Optional pre-validated IP to connect to. This probe opens its OWN
+ *   socket, so a caller that validated the hostname's address must pin it here too —
+ *   otherwise this second connection re-resolves and reopens the DNS-rebinding hole
+ *   the caller just closed. `servername` stays the hostname for SNI.
+ */
+export function probeHybridKex(
+  domain: string,
+  timeoutMs = 8000,
+  address?: string,
+): Promise<KeyExchangeInfo> {
   const runtimeCapable = runtimeSupportsMlKem()
   if (!runtimeCapable) {
     return Promise.resolve(interpretProbeOutcome(false, null))
@@ -125,7 +135,7 @@ export function probeHybridKex(domain: string, timeoutMs = 8000): Promise<KeyExc
         // trusting client. We transmit no data and destroy the socket on
         // handshake. Cert trust is irrelevant to whether the server offers
         // a PQC key-exchange group; cert validity is scanned separately.
-        host: domain,
+        host: address ?? domain,
         port: 443,
         servername: domain,
         rejectUnauthorized: false,
