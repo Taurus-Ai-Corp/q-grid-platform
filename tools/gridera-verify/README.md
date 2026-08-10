@@ -96,7 +96,9 @@ jobs:
       - uses: your-org/gridera-verify@v1
         with:
           bundle-dir: .gridera     # optional (default)
-          network: testnet         # optional (default) — testnet|mainnet|previewnet
+          network: mainnet         # optional FALLBACK (default). anchor.json's own
+                                   # network field wins when present, so existing
+                                   # testnet bundles keep verifying unchanged.
 ```
 
 ### Badge
@@ -114,9 +116,9 @@ Serve it as a static endpoint and point a badge at it:
 ## CLI
 
 ```bash
-node src/verify.mjs --bundle-dir .gridera --network testnet
+node src/verify.mjs --bundle-dir .gridera
 # pin the signer to GRIDERA's published identity (fingerprint form):
-node src/verify.mjs --bundle-dir .gridera --network testnet \
+node src/verify.mjs --bundle-dir .gridera \
   --signer sha256:2a2806f674f00719d17b646c2d68c3f291f5e307a2860cff21d490bb1a45cbeb
 # the full public-key hex is also accepted as --signer.
 # convenience:

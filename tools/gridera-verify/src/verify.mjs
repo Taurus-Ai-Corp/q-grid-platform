@@ -94,14 +94,14 @@ function makeBadge(ok) {
  * Verify a committed .gridera bundle.
  * @param {object}   opts
  * @param {string}   opts.bundleDir   directory containing cbom.signed.json + anchor.json
- * @param {string}  [opts.network]    hedera network (default 'testnet')
+ * @param {string}  [opts.network]    fallback network when the bundle omits one (default 'mainnet')
  * @param {Function}[opts.fetchImpl]  injectable fetch(url) -> Response-like (for offline tests)
  * @param {string}  [opts.signer]     optional pinned signer (full pubkey hex or sha256 fingerprint)
  * @returns {Promise<{ok:boolean, checks:object, badge:object, message:string, exitCode:number}>}
  */
 export async function verifyBundle({
   bundleDir,
-  network = 'testnet',
+  network = 'mainnet',
   fetchImpl = defaultFetch,
   signer = null,
 }) {
@@ -154,8 +154,18 @@ export async function verifyBundle({
     : `CBOM SHA-256 mismatch: anchor.json=${short(checks.anchorHash.expected)} computed=${short(computed)}`
 
   // --- 2b. mirror-node anchor check (public Hedera REST) ---
+  //
+  // The bundle records the network it was anchored on, and that field WINS. A topic id
+  // is only meaningful on the ledger that issued it: resolving a testnet topic against
+  // the mainnet mirror returns 404, so honouring the caller's flag over the bundle's own
+  // record would fail every previously-issued bundle the moment the default changed.
+  // The input is a fallback for older bundles written before the field existed.
+  const resolvedNetwork =
+    typeof anchor?.network === 'string' && anchor.network in MIRROR_HOSTS
+      ? anchor.network
+      : network
   try {
-    const url = mirrorNodeUrl(network, anchor.topicId, anchor.sequenceNumber)
+    const url = mirrorNodeUrl(resolvedNetwork, anchor.topicId, anchor.sequenceNumber)
     checks.mirror.url = url
     const res = await fetchImpl(url)
     if (!res || res.ok === false) {
@@ -168,7 +178,7 @@ export async function verifyBundle({
     const decoded = Buffer.from(body.message, 'base64').toString('utf8')
     checks.mirror.ok = decoded.includes(computed)
     checks.mirror.message = checks.mirror.ok
-      ? `Hedera ${network} topic ${anchor.topicId}#${anchor.sequenceNumber} anchors SHA-256 ${short(computed)}`
+      ? `Hedera ${resolvedNetwork} topic ${anchor.topicId}#${anchor.sequenceNumber} anchors SHA-256 ${short(computed)}`
       : `Mirror-node message at ${anchor.topicId}#${anchor.sequenceNumber} does NOT contain CBOM SHA-256 ${short(computed)}`
   } catch (err) {
     checks.mirror.ok = false
@@ -211,7 +221,7 @@ function short(hex) {
 // --- CLI --------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const args = { bundleDir: '.gridera', network: 'testnet', drift: false, signer: null }
+  const args = { bundleDir: '.gridera', network: 'mainnet', drift: false, signer: null }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === '--bundle-dir') args.bundleDir = argv[++i]
@@ -241,7 +251,7 @@ export async function runCli(argv) {
     signer: args.signer,
   })
 
-  console.log(`gridera-verify — bundle: ${args.bundleDir}  network: ${args.network}`)
+  console.log(`gridera-verify — bundle: ${args.bundleDir}  network fallback: ${args.network} (anchor.json network wins when present)`)
   console.log(`  [${mark(result.checks.signature.ok)}] signature : ${result.checks.signature.message}`)
   console.log(
     `  [${result.checks.signer.applicable ? mark(result.checks.signer.ok) : 'SKIP'}] signer    : ${result.checks.signer.message}`,

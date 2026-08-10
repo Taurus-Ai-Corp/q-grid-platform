@@ -14,9 +14,12 @@ inputs:
     required: false
     default: .gridera
   network:
-    description: Hedera network for mirror-node resolution (testnet | mainnet | previewnet).
+    description: >-
+      Fallback Hedera network for mirror-node resolution (mainnet | testnet | previewnet).
+      Only used when anchor.json does not record its own network -- the bundle's field
+      always wins, because a topic id only resolves on the ledger that issued it.
     required: false
-    default: testnet
+    default: mainnet
 
 runs:
   using: composite
