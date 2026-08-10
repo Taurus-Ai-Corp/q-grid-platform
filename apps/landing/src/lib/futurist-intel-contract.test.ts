@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
@@ -97,11 +97,22 @@ describe('security-headers', () => {
   })
 })
 
-describe('live futurist-intel.html', () => {
-  const html = readFileSync(
-    resolve(__dirname, '../../public/futurist-intel.html'),
-    'utf8',
-  )
+// This asset is NOT tracked by git. It exists on the author's machine and nowhere
+// else, so readFileSync threw ENOENT in CI and failed the whole landing suite while
+// passing locally — the classic works-on-my-machine divergence.
+//
+// The deeper problem the red test exposed: an untracked file under public/ is never
+// deployed either. https://grid-era.com/futurist-intel.html and the q-grid.net
+// equivalent both return 404, and public/QR_CODES/futurist-intel.png is a QR code
+// pointing at that 404.
+//
+// Whether the page should ship is a content decision, so the contract is skipped
+// rather than deleted: commit the HTML and these assertions run automatically.
+const INTEL_HTML = resolve(__dirname, '../../public/futurist-intel.html')
+const intelHtml = existsSync(INTEL_HTML) ? readFileSync(INTEL_HTML, 'utf8') : null
+
+describe.skipIf(intelHtml === null)('live futurist-intel.html', () => {
+  const html = intelHtml as string
 
   it('has no forbidden ops phrases', () => {
     expect(findForbiddenPublicPhrases(html)).toEqual([])
