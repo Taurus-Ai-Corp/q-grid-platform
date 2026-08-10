@@ -38,15 +38,27 @@ fi
 # looks exactly like a real detection. A guard that false-positives is worse than none.
 LIST=$(mktemp) || exit 2
 trap 'rm -f "$LIST"' EXIT
-# Vendored/managed trees are excluded as well as node_modules: their contents are not
-# ours to delete, and a duplicate inside one is the package manager's problem, not a
-# build breaker for this repo.
-find . -name "* [0-9].*" \
+# Two name shapes, because iCloud duplicates directories too:
+#   "routes.d 2.ts"        file with an extension
+#   "pilot-0 2", "sample 2"  directory or extensionless file
+# The original pattern required a dot, so it silently missed the directory form —
+# including a duplicated TEST FIXTURE dir (tools/gridera-verify/fixtures/sample 2)
+# and a duplicated evidence bundle (docs/evidence/pilot-0 2), which are exactly the
+# kind of thing someone later mistakes for a real artifact.
+#
+# Vendored/managed trees are out of scope: not ours to delete. Regenerable build
+# CACHES are excluded from failing too — a duplicate in .next/cache or .turbo/cache
+# is harmless and clears on the next build, and failing on it trains people to
+# disable the guard. .next/types is NOT a cache and stays in scope: that is the one
+# that breaks tsc with TS2300/TS6200.
+find . \( -name "* [0-9].*" -o -name "* [0-9]" \) \
   -not -path "*/node_modules/*" \
   -not -path "./.git/*" \
   -not -path "*/.venv/*" \
   -not -path "*/venv/*" \
   -not -path "*/site-packages/*" \
+  -not -path "*/cache/*" \
+  -not -path "*/cache [0-9]/*" \
   2>/dev/null | sed 's|^\./||' | sort > "$LIST"
 COUNT=$(wc -l < "$LIST" | tr -d ' ')
 
@@ -63,15 +75,33 @@ if [ "${1:-}" = "--fix" ]; then
   # Safe by construction: these sit beside the real file and none are tracked. Refuse
   # anything git tracks anyway, so a legitimately-named file is never removed.
   removed=0
+  manual=0
   while IFS= read -r rel; do
     [ -z "$rel" ] && continue
     if git ls-files --error-unmatch "$rel" >/dev/null 2>&1; then
       echo "  ! refusing to delete git-tracked file: $rel"
       continue
     fi
-    rm -f "$rel" && removed=$((removed + 1))
+    if [ -d "$rel" ]; then
+      # Empty duplicate directory: safe to remove. NON-empty: left alone on purpose.
+      # Recursive auto-delete is exactly the reflex that deleted 435 files from a
+      # sibling project on 2026-08-10; a directory with contents gets named, not
+      # removed, so a human decides.
+      if rmdir "$rel" 2>/dev/null; then
+        removed=$((removed + 1))
+      else
+        echo "  ~ non-empty duplicate directory, NOT auto-removed: $rel"
+        manual=$((manual + 1))
+      fi
+    else
+      rm -f "$rel" && removed=$((removed + 1))
+    fi
   done < "$LIST"
   echo "✓ removed $removed duplicate(s)"
+  if [ "$manual" -gt 0 ]; then
+    echo "  $manual non-empty duplicate directory/ies need a human decision (listed above)."
+    exit 1
+  fi
   exit 0
 fi
 
