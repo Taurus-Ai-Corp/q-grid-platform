@@ -33,5 +33,19 @@
   },
   "dependencies": {
     "@taurus/pqc-crypto": "workspace:*"
-  }
+  },
+  "license": "BUSL-1.1",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Taurus-Ai-Corp/GRIDERA.git",
+    "directory": "packages/pqc-engine"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "PQC TLS scanner, QRS scoring and CycloneDX CBOM generation."
 }
