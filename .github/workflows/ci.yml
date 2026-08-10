@@ -27,6 +27,18 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Brand + host guard. Runs FIRST: it is seconds, needs no build, and catches the
+      # two classes that are cheapest to fix and most expensive to ship — space-form
+      # product names, and links to regional cells that have no DNS.
+      #
+      # CI has no $HOME/.ai-context, so the guard falls back to its repo-local rule set
+      # by design. BRAND_GUARD_VERBOSE prints which rule set was used, so a pass here
+      # can be compared against a developer's machine when they disagree.
+      - run: BRAND_GUARD_VERBOSE=1 pnpm lint:brand
+      # macOS/iCloud conflict copies ("routes.d 2.ts") duplicate type declarations and
+      # break tsc with TS2300/TS6200. They had broken type-check twice locally, and
+      # turbo replays a cached PASS afterwards so it looks transient. Cheap to assert.
+      - run: pnpm lint:dupes
       - run: pnpm type-check
       # Guards the silent-skip: `turbo run test` ignores packages with no test
       # script, so an untested package would otherwise pass CI invisibly.

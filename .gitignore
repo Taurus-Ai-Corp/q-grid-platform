@@ -34,4 +34,14 @@ coverage/
 # packages/db/src/ holding a stale copy of the residency-routing logic — tsc
 # globs src/**, so it compiled locally while CI never saw it. Same class as
 # commit e2e7956 "remove accidental duplicate ca config file".
-* 2.*
+
+# Build artifacts that kept landing in the working tree
+
+# macOS duplicates. Finder/iCloud creates "file 2.ext" copies; 42 of them had
+# accumulated inside .next and one ("SECURITY 2.md") at the repo root, where it
+# silently shadowed the real file in searches.
+* [0-9].*
+
+# Agent scratch + session research (keep locally, never commit)
+.hermes/
+findings.md

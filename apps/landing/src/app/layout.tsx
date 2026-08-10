@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Analytics } from '../components/analytics'
+import { SITE_URL } from '@/lib/site'
 
 // Fonts loaded via CSS @import in globals.css (avoids Google Fonts fetch failures during parallel builds)
 // DM Sans (body), IBM Plex Mono (code), Jura (headings)
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     title: 'GRIDERA — Post-Quantum Compliance Infrastructure by TAURUS AI Corp',
     description:
       'Get your PQC readiness score in minutes, not months. NIST FIPS 203/204, EU AI Act Aug 2026, SWIFT 2027.',
-    url: 'https://q-grid.net',
+    url: SITE_URL,
     siteName: 'GRIDERA',
     locale: 'en_US',
     type: 'website',
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     description:
       'Get your PQC readiness score in minutes, not months. 8 Compliance Engines. NIST FIPS 203/204.',
   },
-  metadataBase: new URL('https://q-grid.net'),
+  metadataBase: new URL(SITE_URL),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

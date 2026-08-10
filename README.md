@@ -9,12 +9,12 @@
 <h1 align="center">GRIDERA</h1>
 
 <p align="center">
-  <strong>Post-Quantum Compliance Platform — Scan. Comply. Migrate.</strong><br/>
+  <strong>Post-Quantum Compliance Platform — Scan · Guard · Migrate · Comply · Certify</strong><br/>
     Enterprise-grade PQC compliance platform with ML-DSA-65/ML-KEM-768 signing, Hedera HCS audit trails, and geo-routed regulatory compliance across NA, EU, IN, and UAE.
 </p>
 
 <p align="center">
-  <a href="https://eu.q-grid.net">Website</a> · <a href="https://eu.q-grid.net/scan">Free PQC Scan</a> · <a href="#quick-start">Quick Start</a> · <a href="docs/API.md">API Docs</a> · <a href="#enterprise">Enterprise</a>
+  <a href="https://grid-era.com">Website</a> · <a href="https://grid-era.com/scan">Free PQC Scan</a> · <a href="#quick-start">Quick Start</a> · <a href="docs/API.md">API Docs</a> · <a href="#enterprise">Enterprise</a>
 </p>
 
 ---
@@ -46,7 +46,7 @@ GRIDERA is the first platform that combines automated PQC vulnerability scanning
 ```
 gridera/
 ├── apps/
-│   ├── landing/          # Marketing site (q-grid.net) — Next.js 16, dark mode
+│   ├── landing/          # Marketing site (grid-era.com) — Next.js 16, dark mode
 │   └── comply/           # Compliance platform — Next.js 16, first-party JWT auth, Stripe billing
 ├── packages/
 │   ├── pqc-crypto/       # ML-DSA-65 signing, ML-KEM-768 encapsulation, AES-256-GCM
@@ -65,8 +65,8 @@ gridera/
 ```mermaid
 graph TB
     subgraph "Client Layer"
-        A[q-grid.net Landing] --> B[Free PQC Scan]
-        C[eu.q-grid.net] --> D[Dashboard]
+        A[grid-era.com Landing] --> B[Free PQC Scan]
+        C[eu.grid-era.com] --> D[Dashboard]
         D --> E[Assessment Wizard]
         D --> F[Reports]
         D --> G[Settings / Billing]
@@ -137,11 +137,28 @@ pnpm --filter comply dev
 | `@taurus/ui` | Brand components, Grid Mesh logo, design tokens | — |
 | `@taurus/tsconfig` | Shared TypeScript base configurations | — |
 
+## Domains
+
+`grid-era.com` is canonical. `q-grid.net` still serves and is kept during cutover —
+regional cells stay there until each is provisioned on the new domain.
+
+| Host | Serves | Status |
+|------|--------|--------|
+| `grid-era.com` | Landing + Scan | **live** (canonical) |
+| `eu.grid-era.com` | Comply — EU cell | **live** |
+| `q-grid.net`, `eu.q-grid.net` | Landing, Comply EU | live (retained during cutover) |
+| `na` · `in` · `ae` · `ca`**.grid-era.com** | — | **not provisioned** — no DNS |
+
+The public origin is set in one place, `apps/landing/src/lib/site.ts`, and overridable
+via `NEXT_PUBLIC_SITE_URL`. Regional cells are listed separately and deliberately *not*
+derived from it, so moving the canonical origin cannot silently produce dead regional
+links. `pnpm lint:brand` fails the build if source links an unprovisioned cell.
+
 ## Regulatory Coverage
 
 | Jurisdiction | Region | Frameworks | Deployment |
 |-------------|--------|-----------|-----------|
-| European Union | `eu` | EU AI Act, GDPR, DORA, eIDAS 2.0 | eu.q-grid.net |
+| European Union | `eu` | EU AI Act, GDPR, DORA, eIDAS 2.0 | eu.grid-era.com |
 | North America | `na` | OSFI B-13, PIPEDA, CCCS PQC, NIST CSF | na.q-grid.net |
 | India | `in` | RBI DPSC, IT Act, DPDPA 2023 | in.q-grid.net |
 | UAE | `ae` | TDRA, NESA, ADGM | ae.q-grid.net |
@@ -206,8 +223,8 @@ This project is licensed under the [Business Source License 1.1](LICENSE) (BSL 1
 
 | Resource | URL |
 |----------|-----|
-| Website | [q-grid.net](https://q-grid.net) |
-| Free PQC Scan | [q-grid.net/scan](https://q-grid.net/scan) |
+| Website | [grid-era.com](https://grid-era.com) |
+| Free PQC Scan | [grid-era.com/scan](https://grid-era.com/scan) |
 | EU Comply Platform | [eu.q-grid.net](https://eu.q-grid.net) |
 | Documentation | [docs/](docs/) |
 | Security Policy | [SECURITY.md](https://github.com/Taurus-Ai-Corp/.github/blob/main/SECURITY.md) |

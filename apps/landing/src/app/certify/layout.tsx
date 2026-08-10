@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { siteUrl } from '@/lib/site'
 
 // page.tsx is a client component (form state), which cannot export metadata — hence a
 // route layout. Without this the page inherited the generic root title, leaving the
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     title: 'GRIDERA|Certify — Verifiable Attestation',
     description:
       'ML-DSA-65-signed, Hedera-anchored compliance evidence. Anyone can verify it without trusting us.',
-    url: 'https://q-grid.net/certify',
+    url: siteUrl('/certify'),
     siteName: 'GRIDERA',
     locale: 'en_US',
     type: 'website',

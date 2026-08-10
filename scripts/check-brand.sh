@@ -90,17 +90,22 @@ if [ -n "${BRAND_GUARD_VERBOSE:-}" ]; then
   fi
 fi
 
-# --- Dead-domain rule (added 2026-08-09) ------------------------------------
-# grid-era.com was registered 2026-08-08 but has NO A RECORD and serves nothing
-# (verified against 8.8.8.8 and 1.1.1.1). Docs may discuss it; shipping app source
-# must never point a CTA or canonical at it.
+# --- Unprovisioned-host rule (added 2026-08-09, inverted 2026-08-10) --------
+# The rule used to forbid grid-era.com outright, because the domain resolved to
+# nothing. That is no longer true: on 2026-08-10 the apex and the EU cell were
+# provisioned and both serve HTTP 200.
 #
-# Path-scoped rather than global, and evaluated inside BOTH scan loops below so it
-# honours the staged-only contract in the header. An earlier version ran a bare
-# `grep -r ... apps/*/src` outside the loops, which (a) failed every developer's
-# every commit on one pre-existing hit and (b) silently matched nothing when invoked
-# from a subdirectory, since the glob is CWD-relative.
-DEAD_DOMAIN='grid-era\.com'
+#   grid-era.com      A     76.76.21.21           -> vercel "landing"  LIVE
+#   eu.grid-era.com   CNAME cname.vercel-dns.com  -> vercel "comply"   LIVE
+#
+# What is still dead is every OTHER regional cell on the new domain. Pointing a CTA
+# at one of those sends users to a host that does not exist, so they stay forbidden
+# until each is actually provisioned — delete a prefix here as it goes live, and
+# verify with `dig +short <host>` before you do.
+#
+# Path-scoped and evaluated inside BOTH scan loops below, so it honours the
+# staged-only contract in the header.
+DEAD_DOMAIN='(na|in|ae|ca)\.grid-era\.com'
 APP_SRC_RE='^apps/[^/]+/src/'
 
 # Paths that legitimately contain the forbidden strings as negative examples,
@@ -132,7 +137,7 @@ if [ "${1:-}" = "--all" ]; then
       while IFS=: read -r ln text; do
         [ -z "$ln" ] && continue
         echo "$text" | grep -q "brand-allow" && continue
-        report "$f" "$ln" "grid-era.com in app source — domain has no A record"
+        report "$f" "$ln" "regional grid-era.com cell is not provisioned — no DNS"
       done < <(grep -nEI "$DEAD_DOMAIN" "$f" 2>/dev/null)
     fi
   done < <(git ls-files)
@@ -155,7 +160,7 @@ else
         elif echo "$text" | grep -qE "$FORBIDDEN"; then
           report "$current_file" "$newln" "$(echo "$text" | sed 's/^[[:space:]]*//' | cut -c1-80)"
         elif echo "$current_file" | grep -qE "$APP_SRC_RE" && echo "$text" | grep -qE "$DEAD_DOMAIN"; then
-          report "$current_file" "$newln" "grid-era.com in app source — domain has no A record"
+          report "$current_file" "$newln" "regional grid-era.com cell is not provisioned — no DNS"
         fi
         newln=$((newln+1))
         ;;
@@ -168,7 +173,7 @@ fi
 if [ "$fail" -ne 0 ]; then
   echo ""
   echo "  Brand guard: use pipe form (GRIDERA|Comply), never \"Q-Grid <Verb>\" (any case), space-form \"GRIDERA <Verb>\", or \"GRID-ERA|<Verb>\" (that's the domain spelling)."
-  echo "  grid-era.com must not appear in apps/*/src — it has no A record and serves nothing. Use q-grid.net."
+  echo "  grid-era.com and eu.grid-era.com are LIVE. na/in/ae/ca.grid-era.com are NOT provisioned — use the q-grid.net cell until they are."
   echo "  \"Quantum Grid\"/\"Quantum-Grid-Mesh\"/\"q-grid-platform\" are retired (dir/package is gridera-platform). Domains (q-grid.net — FROZEN, production) are fine."
   echo "  Edge case? add 'brand-allow' on the line, or bypass once with: git commit --no-verify"
   exit 1
