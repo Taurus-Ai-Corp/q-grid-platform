@@ -14,9 +14,10 @@
 | Product | Role in A (S4) | Code / deploy |
 |---------|----------------|---------------|
 | **GRIDERA\|Scan** | Free/public scan → QRS entry | `apps/landing` + `@taurus/pqc-engine`; prod **q-grid.net** |
-| **GRIDERA\|Comply** | Primary A2 shell — assessments, matrix, reports, systems, CA pack | `apps/comply`; prod today **eu.q-grid.net**; CA cell target **ca.q-grid.net** (interim: **q-grid.net/ca** → `q-grid-comply-ca`) |
+| **GRIDERA\|Comply** | Primary A2 shell — assessments, matrix, systems, CA pack (assess & regulate: EU AI Act, DORA) | `apps/comply`; prod today **eu.q-grid.net**; CA cell target **ca.q-grid.net** (interim: **q-grid.net/ca** → `q-grid-comply-ca`) |
 | **GRIDERA\|Guard** | Executor / observe / LLM compliance assist | `packages/guard` (+ `packages/guard/api`); **rewrite via Comply host** `/guard/v1/*` — not dead `guard.gridera.net` |
 | **GRIDERA\|Migrate** | Org-change path (wizard / policies) — **in-app**, not separate deploy | Comply dashboard + policy/migration components |
+| **GRIDERA\|Certify** | Executive reports / attestation / verifiable proof — **in-app**, not separate deploy (marketing route `/certify` on landing) | Comply `(dashboard)/dashboard/executive` + `api/executive` + `api/reports` (ML-DSA-signed); `caConfig.documentTypes`; `tools/gridera-verify` |
 | **GRIDERA\|Pay / others** | **Out of A** | Separate repos/domains (`rupee.q-grid.in` etc.) |
 
 **A1 delivery kit** rides **GRIDERA\|Comply + Scan contracts only** (same monorepo `sales-engine/`).
@@ -28,7 +29,7 @@ Acquire (q-grid.net + Calendly)
   → Scan (free QRS on landing)
   → Comply (convert / assess / matrix)  [CA cell for C1 ICP]
   → Guard | Migrate (expand, in-product)
-  → Prove (ML-DSA stamp + HCS)
+  → Certify = Prove (ML-DSA stamp + HCS)
 ```
 
 Deep link: landing scan → `/comply?scan={scanId}` (`scripts/smoke-comply-flow.ts`, `pnpm smoke:funnel`).
@@ -121,10 +122,10 @@ A cell = `{ domain, jurisdiction, data region, database, keys, entity, law, reg 
 
 ```
         GRIDERA product line (pipe brand)
-   Scan ──────────► Comply ──────────► Guard / Migrate (in-product)
+   Scan ──────────► Comply ──────────► Guard / Migrate / Certify (in-product)
    apps/landing     apps/comply        packages/guard + migrate UI
-   q-grid.net       ca.q-grid.net ★    via Comply host rewrite
-                    eu.q-grid.net (live)
+   q-grid.net       ca.q-grid.net ★    + Certify = dashboard/executive
+                    eu.q-grid.net (live)   + api/reports (ML-DSA) + HCS
 
    ★ DevOps focus: CA sovereign cell
         JURISDICTION=ca
@@ -142,7 +143,7 @@ A cell = `{ domain, jurisdiction, data region, database, keys, entity, law, reg 
 
 ## 6. Components revision (aligned)
 
-- **Executive Operating View** lives only in **GRIDERA\|Comply** dashboard; data only from Comply APIs with **jurisdiction = ca**.
+- **Executive Operating View** is branded **GRIDERA\|Certify** externally but lives only in the **GRIDERA\|Comply** dashboard (`(dashboard)/dashboard/executive`); data only from Comply APIs with **jurisdiction = ca**. Certify is a surface brand, **not a separate deploy** — same rule as Migrate.
 - **Compliance matrix** default pack = **`caConfig.regulations`** (OSFI B-13/E-23, CCCS PQC, PIPEDA, AIDA, …) — not a generic “Canada pack” invented outside jurisdiction package.
 - **Document types** for A1 reports must match **`caConfig.documentTypes`** (esp. `pqc_readiness_report`, `data_residency_certificate`).
 - **S4 ship checklist** includes CA DB routing + deploy (DNS + password) — product features without CA cell are incomplete for **C1 ICP**.

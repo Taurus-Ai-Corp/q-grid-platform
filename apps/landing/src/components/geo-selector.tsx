@@ -1,10 +1,12 @@
 'use client'
 
+import { REGIONAL_CELLS } from '@/lib/site'
+
 const GEO_CARDS = [
   {
     flag: '🇨🇦',
     region: 'North America',
-    href: 'https://na.q-grid.net',
+    href: REGIONAL_CELLS.na,
     regs: ['OSFI B-13', 'PIPEDA', 'SOC 2 Type II'],
     tag: 'NA',
     live: false,
@@ -12,7 +14,7 @@ const GEO_CARDS = [
   {
     flag: '🇪🇺',
     region: 'European Union',
-    href: 'https://eu.q-grid.net',
+    href: REGIONAL_CELLS.eu,
     regs: ['EU AI Act', 'GDPR', 'DORA'],
     tag: 'EU',
     live: true,
@@ -20,7 +22,7 @@ const GEO_CARDS = [
   {
     flag: '🇮🇳',
     region: 'India',
-    href: 'https://in.q-grid.net',
+    href: REGIONAL_CELLS.in,
     regs: ['DPDP Act 2023', 'RBI FREE-AI', 'SEBI'],
     tag: 'IN',
     live: false,
@@ -28,7 +30,7 @@ const GEO_CARDS = [
   {
     flag: '🇦🇪',
     region: 'UAE',
-    href: 'https://ae.q-grid.net',
+    href: REGIONAL_CELLS.ae,
     regs: ['VARA', 'DFSA', 'CBUAE'],
     tag: 'AE',
     live: false,

@@ -39,7 +39,7 @@ const TIERS = [
     popular: true,
     features: [
       '5 user seats',
-      'All 11 tracked standards',
+      '38 regulations across 5 sovereign jurisdiction packs',
       'All 8 compliance engines',
       'Blockchain audit trail (Hedera HCS)',
       'Priority support',
@@ -63,13 +63,13 @@ const TIERS = [
     features: [
       'Unlimited seats',
       '8 compliance engines',
-      'Crypto agility engine',
       'Dedicated CSM + SLA',
-      'SSO / SAML',
-      'Air-gapped deployment option',
       'Hedera Mainnet anchoring',
       'SOC 2, ISO 27001 mapping',
       'Custom SLA & onboarding',
+      'Crypto agility engine (roadmap)',
+      'SSO / SAML (roadmap)',
+      'Air-gapped deployment (roadmap)',
     ],
   },
 ]

@@ -27,7 +27,7 @@ export default function LendPage() {
   return (
     <ProductShell>
       <ProductHero
-        eyebrow="GRIDERA|Lend"
+        eyebrow="GRIDERA|Lend — roadmap, not yet available"
         title={
           <>
             AI Lending for

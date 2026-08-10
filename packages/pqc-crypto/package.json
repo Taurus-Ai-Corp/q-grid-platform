@@ -28,5 +28,19 @@
     "@types/node": "^25.5.0",
     "typescript": "^5.8.0",
     "vitest": "^3.0.0"
-  }
+  },
+  "license": "BUSL-1.1",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Taurus-Ai-Corp/GRIDERA.git",
+    "directory": "packages/pqc-crypto"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "ML-DSA-65 / ML-KEM-768 post-quantum primitives (NIST FIPS 203/204)."
 }

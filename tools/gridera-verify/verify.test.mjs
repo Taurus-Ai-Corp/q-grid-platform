@@ -14,7 +14,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -218,4 +218,69 @@ test('(g) signerMatches is fail-closed on empty/garbage input', () => {
   assert.equal(signerMatches('deadbeef', 'not-hex!!'), false, 'non-hex pin → false')
   assert.equal(signerMatches('deadbeef', 'deadbeef'), true, 'exact full-key match → true')
   assert.equal(signerMatches('DEADBEEF', 'deadbeef'), true, 'case-insensitive full-key match')
+})
+
+// --- (h) the bundle's own network wins over the caller's fallback ----------
+//
+// Regression guard for the mainnet-default change. Every bundle issued so far
+// records "network": "testnet". A topic id only resolves on the ledger that
+// issued it, so if the caller's flag won, flipping the default to mainnet would
+// have sent every existing bundle to the mainnet mirror, 404'd, and turned every
+// adopter's build red at once — the exact failure the change was meant to avoid.
+
+test('(h) anchor.network overrides the caller network for mirror resolution', async () => {
+  const { dir, bundleDir, cbomSha256 } = buildBundle()
+  try {
+    // Rewrite the anchor to declare testnet explicitly.
+    const anchorPath = join(bundleDir, 'anchor.json')
+    const anchor = JSON.parse(readFileSync(anchorPath, 'utf8'))
+    anchor.network = 'testnet'
+    writeFileSync(anchorPath, JSON.stringify(anchor, null, 2))
+
+    let requestedUrl = null
+    const spyFetch = async (url) => {
+      requestedUrl = url
+      return stubMirror(cbomSha256)(url)
+    }
+
+    // Caller asks for mainnet (the new default) — the bundle says testnet.
+    const result = await verifyBundle({
+      bundleDir,
+      network: 'mainnet',
+      fetchImpl: spyFetch,
+    })
+
+    assert.ok(
+      requestedUrl.includes('testnet.mirrornode.hedera.com'),
+      `must resolve against the bundle's network, got: ${requestedUrl}`,
+    )
+    assert.ok(
+      !requestedUrl.includes('mainnet.mirrornode'),
+      'must NOT use the caller network when the bundle declares one',
+    )
+    assert.equal(result.ok, true, 'existing testnet bundle still verifies under a mainnet default')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('(h2) caller network is used only when the bundle omits one', async () => {
+  const { dir, bundleDir, cbomSha256 } = buildBundle() // buildBundle writes no network field
+  try {
+    let requestedUrl = null
+    await verifyBundle({
+      bundleDir,
+      network: 'mainnet',
+      fetchImpl: async (url) => {
+        requestedUrl = url
+        return stubMirror(cbomSha256)(url)
+      },
+    })
+    assert.ok(
+      requestedUrl.includes('mainnet.mirrornode.hedera.com'),
+      `legacy bundle with no network must fall back to the caller, got: ${requestedUrl}`,
+    )
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
 })

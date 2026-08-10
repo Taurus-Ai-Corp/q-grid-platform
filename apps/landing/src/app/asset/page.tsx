@@ -4,7 +4,7 @@ import ProductHero from '@/components/product-hero'
 import ProductSection from '@/components/product-section'
 
 export const metadata: Metadata = {
-  title: 'GRIDERA Asset — Enterprise Crypto Asset Management',
+  title: 'GRIDERA|Asset — Enterprise Crypto Asset Management',
   description:
     'Enterprise crypto asset management and demo portal. Quantum-safe custody, token lifecycle management, and immutable audit trails for digital assets.',
 }
@@ -20,7 +20,7 @@ export default function AssetPage() {
   return (
     <ProductShell>
       <ProductHero
-        eyebrow="GRIDERA Asset"
+        eyebrow="GRIDERA|Asset — concept, not yet available"
         title={
           <>
             Enterprise Crypto
@@ -44,7 +44,7 @@ export default function AssetPage() {
         </div>
       </ProductSection>
 
-      <ProductSection eyebrow="Hedera-native, quantum-ready" title="Why GRIDERA Asset" bg="bone">
+      <ProductSection eyebrow="Hedera-native, quantum-ready" title="Why GRIDERA|Asset" bg="bone">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { title: 'Immutable Provenance', desc: 'Every asset movement is anchored to Hedera HCS with ML-DSA-65 signatures.' },
@@ -66,7 +66,7 @@ export default function AssetPage() {
             Secure Your Digital Asset Operations
           </h2>
           <p className="text-[16px] text-[var(--graphite-med)] leading-[1.6] max-w-[520px] mx-auto mb-8">
-            Get a tailored demo of GRIDERA Asset, including custody architecture, policy engine, and compliance reporting.
+            Get a tailored demo of GRIDERA|Asset, including custody architecture, policy engine, and compliance reporting.
           </p>
           <a
             href="https://calendly.com/taurusai/gridera-executive-briefing"

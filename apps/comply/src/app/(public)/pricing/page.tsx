@@ -56,7 +56,7 @@ const PLANS = [
     features: [
       'Unlimited AI systems',
       'All regulations + custom framework',
-      'Air-gapped / self-hosted deployment',
+      'Self-hosted deployment; air-gapped (roadmap)',
       'Custom Ollama/vLLM integration',
       'White-label options',
       'Dedicated compliance consultant',

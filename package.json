@@ -22,7 +22,8 @@
     "agents:cell-health": "bash scripts/agents/cell-health.sh",
     "agents:hierarchy": "bash scripts/agents/hierarchy-compare.sh",
     "clean": "turbo run clean",
-    "assert:test-scripts": "tsx scripts/assert-test-scripts.ts"
+    "assert:test-scripts": "tsx scripts/assert-test-scripts.ts",
+    "lint:dupes": "bash scripts/check-no-dupes.sh"
   },
   "devDependencies": {
     "tsx": "^4.21.0",

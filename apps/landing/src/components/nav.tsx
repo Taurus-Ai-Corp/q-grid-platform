@@ -4,12 +4,11 @@ import { useState } from 'react'
 
 const PRODUCTS = [
   { name: 'GRIDERA', href: '/', tag: 'Platform' },
-  { name: 'Guard', href: '/guard', tag: 'AI Guardrails' },
-  { name: 'Scan', href: '/scan', tag: 'PQC Scanner' },
-  { name: 'Migrate', href: '/migrate', tag: 'PQC Migration' },
-  { name: 'Comply', href: '/comply', tag: 'Risk Reports' },
-  { name: 'Lend', href: '/lend', tag: 'MSME Lending' },
-  { name: 'Asset', href: '/asset', tag: 'Crypto Assets' },
+  { name: 'Scan', href: '/scan', tag: '01 — Uncover Risk' },
+  { name: 'Guard', href: '/guard', tag: '02 — Control Exposure' },
+  { name: 'Migrate', href: '/migrate', tag: '03 — Transform' },
+  { name: 'Comply', href: '/comply', tag: '04 — Assess & Regulate' },
+  { name: 'Certify', href: '/certify', tag: '05 — Prove Trust' },
 ]
 
 const NAV_LINKS = [

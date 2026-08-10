@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
 import path from 'path'
+import { buildSecurityHeaderPairs } from './security-headers'
 
 // Build identifier to force cache invalidation on Vercel CDN
 const BUILD_ID = 'gridera-jwt-auth-v2-' + Date.now()
@@ -50,18 +51,38 @@ const nextConfig: NextConfig = {
     ]
   },
   async headers() {
+    const securityHeaders = buildSecurityHeaderPairs()
+    // Only the PDF route gets same-origin framing; everything else stays DENY.
+    const pdfHeaders = buildSecurityHeaderPairs({ frameOptions: 'SAMEORIGIN' })
     return [
       {
-        source: '/(.*)',
+        source: '/pdfs/:path*',
         headers: [
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'X-DNS-Prefetch-Control', value: 'on' },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
+          ...pdfHeaders,
+          { key: 'Content-Disposition', value: 'inline' },
+          { key: 'Cache-Control', value: 'public, max-age=3600' },
+        ],
+      },
+      {
+        source: '/videos/:path*',
+        headers: [
+          ...securityHeaders,
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
+      // Badge SVGs set their own Cache-Control in the route handler. They MUST stay
+      // cacheable: a README badge is fetched on every page view, and no-store would mean
+      // a fresh TLS handshake against the scanned domain each time — slow for the viewer
+      // and abusive to the target. Security headers still apply.
+      {
+        source: '/api/badge/:path*',
+        headers: securityHeaders,
+      },
+      // Exclude media + badge paths so no-store does not override their cache policy
+      {
+        source: '/:path((?!pdfs/|videos/|api/badge/).*)',
+        headers: [
+          ...securityHeaders,
           { key: 'Cache-Control', value: 'no-store' },
         ],
       },

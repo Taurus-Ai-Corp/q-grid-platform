@@ -322,6 +322,7 @@ function QrepDashboard({ qrep }: { qrep: QrepCompact }) {
             </h2>
             <p className="text-[14px] text-[var(--graphite-med)] max-w-[520px]">
               GRIDERA|Comply provides a complete remediation roadmap with agent-driven PQC migration planning, CBOM generation, and NIST FIPS 203/204 compliance mapping — free for 14 days.
+              Need board-level attestation? <a href="/certify" className="text-[var(--accent)] hover:underline">GRIDERA|Certify →</a>
             </p>
           </div>
           <div className="flex flex-col gap-3 shrink-0">
@@ -372,6 +373,9 @@ function ComplyLanding() {
               State-sponsored actors are harvesting encrypted traffic today — financial records, medical data,
               intellectual property — to decrypt with future quantum computers. If your data has a sensitivity
               window of 3–10 years, <strong className="text-[var(--graphite)]">you are already exposed.</strong>
+              <span className="block mt-3 font-mono text-[11px] text-[var(--accent)] tracking-[0.08em] uppercase">
+                Step 04 — Assess &amp; Regulate · EU AI Act · DORA · GDPR · PIPEDA/DPDP
+              </span>
             </p>
           </div>
         </div>

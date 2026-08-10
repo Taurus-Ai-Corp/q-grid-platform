@@ -107,17 +107,34 @@ function parseCertificate(cert: tls.PeerCertificate): { certInfo: CertificateInf
   return { certInfo, algorithm }
 }
 
-export function scanDomain(domain: string): Promise<ScanResult> {
+export interface ScanOptions {
+  /**
+   * Pin the TCP connection to an address the caller has already validated.
+   *
+   * Without this, `host: domain` makes the OS resolve the name again, so a caller that
+   * checked "does this name resolve to a public address?" validated a DIFFERENT lookup
+   * from the one that connects. An attacker serving a TTL-0 record flips the second
+   * answer to 127.0.0.1 or 169.254.169.254 and the handshake lands inside the network —
+   * classic DNS rebinding. `servername` stays the hostname so SNI and cert validation
+   * still see the real name.
+   */
+  address?: string
+  /** Socket timeout in ms (default 10000). Also bounds the hybrid-KEX probe. */
+  timeoutMs?: number
+}
+
+export function scanDomain(domain: string, opts: ScanOptions = {}): Promise<ScanResult> {
   return new Promise((resolve) => {
     const scannedAt = new Date().toISOString()
+    const timeoutMs = opts.timeoutMs ?? 10000
 
     const socket = tls.connect(
       {
-        host: domain,
+        host: opts.address ?? domain,
         port: 443,
         servername: domain,
         rejectUnauthorized: false,
-        timeout: 10000,
+        timeout: timeoutMs,
       },
       () => {
         const peerCert = socket.getPeerCertificate(true)
@@ -150,7 +167,7 @@ export function scanDomain(domain: string): Promise<ScanResult> {
         // Probe for post-quantum hybrid key exchange on a second, short-lived
         // connection. Independent of the certificate: a site can run PQC key
         // exchange today while its cert stays classical (no PQC CA exists yet).
-        probeHybridKex(domain).then((keyExchange) => {
+        probeHybridKex(domain, timeoutMs, opts.address).then((keyExchange) => {
           resolve({
             domain,
             scannedAt,
@@ -163,7 +180,7 @@ export function scanDomain(domain: string): Promise<ScanResult> {
       },
     )
 
-    socket.setTimeout(10000, () => {
+    socket.setTimeout(timeoutMs, () => {
       socket.destroy()
       resolve({
         domain,
@@ -171,7 +188,7 @@ export function scanDomain(domain: string): Promise<ScanResult> {
         algorithms: [],
         certificates: [],
         tlsVersion: 'unknown',
-        error: `Connection timed out after 10 seconds`,
+        error: `Connection timed out after ${timeoutMs}ms`,
       })
     })
 
